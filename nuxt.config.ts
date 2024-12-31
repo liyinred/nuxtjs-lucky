@@ -8,6 +8,7 @@ export default defineNuxtConfig({
       title: "MSBIO",
       link: [{ rel: "icon", type: "image/x-icon", href: "/logo.ico" }],
     },
+    pageTransition: { name: 'page', mode: 'out-in' }
   },
   devServer: {
     host: "0.0.0.0",
