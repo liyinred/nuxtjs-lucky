@@ -64,7 +64,7 @@ export default {
         {
           padding: '33',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/u3fmozJlafpOIjMg.png',
+            src: '1.webp',
             width: '100%',
             top: '5px',
             left: '4px',
@@ -76,7 +76,7 @@ export default {
         {
           fonts: [{ text: '雨伞', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '30',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/3tqI8bnECmb9C7jk.png',
+            src: '3.webp',
             width: '35%',
             top: '35px'
           }]
@@ -84,7 +84,7 @@ export default {
         {
           fonts: [{ text: '招财猫', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '30',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/3tqI8bnECmb9C7jk.png',
+            src: '3.webp',
             width: '35%',
             top: '35px'
           }]
@@ -92,7 +92,7 @@ export default {
         {
           fonts: [{ text: '小玩偶', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '40',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/3tqI8bnECmb9C7jk.png',
+            src: '3.webp',
             width: '35%',
             top: '35px'
           }]
@@ -100,7 +100,7 @@ export default {
         {
           fonts: [{ text: '文创冰箱贴', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '40',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/3tqI8bnECmb9C7jk.png',
+            src: '3.webp',
             width: '35%',
             top: '35px'
           }]
@@ -108,7 +108,7 @@ export default {
         {
           fonts: [{ text: '便签', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '100',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/3tqI8bnECmb9C7jk.png',
+            src: '3.webp',
             width: '35%',
             top: '35px'
           }]
@@ -116,7 +116,7 @@ export default {
         {
           fonts: [{ text: '玩具', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '100',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/3tqI8bnECmb9C7jk.png',
+            src: '3.webp',
             width: '35%',
             top: '35px'
           }]
@@ -133,7 +133,7 @@ export default {
         {
           radius: '45%',
           imgs: [{
-            src: 'https://cdn-fusion.imgcdn.store/i/2024/LbrlJ2BS2CW44o74.png ',
+            src: '2.webp ',
             width: '80%',
             top: '-95%'
           }]
@@ -180,7 +180,7 @@ export default {
         const urlParams = new URLSearchParams(window.location.search);
         const openid = urlParams.get('openid');
         console.log("openid is ", openid)
-        const response = await fetch(`http://192.168.10.159:8082/get_lucky_product_id/${openid}`)
+        const response = await fetch(`http://114.132.74.7:8080/get_lucky_product_id/${openid}`)
         if (response.status === 404) {
           this.handleProductUnavailable()
           return null;
@@ -196,6 +196,7 @@ export default {
 
         return await response.json()
       } catch (error) {
+        this.handleProductUnavailable()
         console.error('接口请求失败:', error)
         throw error
       }
