@@ -82,7 +82,7 @@ export default {
           }]
         },
         {
-          fonts: [{ text: '招财猫', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '30',
+          fonts: [{ text: '玩具', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '30',
           imgs: [{
             src: '3.webp',
             width: '35%',
@@ -90,7 +90,7 @@ export default {
           }]
         },
         {
-          fonts: [{ text: '小玩偶', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '40',
+          fonts: [{ text: '招财猫', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '40',
           imgs: [{
             src: '3.webp',
             width: '35%',
@@ -98,7 +98,7 @@ export default {
           }]
         },
         {
-          fonts: [{ text: '文创冰箱贴', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '40',
+          fonts: [{ text: '小玩偶', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '40',
           imgs: [{
             src: '3.webp',
             width: '35%',
@@ -106,7 +106,7 @@ export default {
           }]
         },
         {
-          fonts: [{ text: '便签', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '100',
+          fonts: [{ text: '冰箱贴', top: '10%', fontColor: '#92342A' }], background: '#FFD099', range: '100',
           imgs: [{
             src: '3.webp',
             width: '35%',
@@ -114,7 +114,7 @@ export default {
           }]
         },
         {
-          fonts: [{ text: '玩具', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '100',
+          fonts: [{ text: '便签', top: '10%', fontColor: '#92342A' }], background: '#FFFFFF', range: '100',
           imgs: [{
             src: '3.webp',
             width: '35%',
@@ -180,7 +180,7 @@ export default {
         const urlParams = new URLSearchParams(window.location.search);
         const openid = urlParams.get('openid');
         console.log("openid is ", openid)
-        const response = await fetch(`http://114.132.74.7:8080/get_lucky_product_id/${openid}`)
+        const response = await fetch(`https://mini.msbiox.com/api/get_lucky_product_id/${openid}`)
         if (response.status === 404) {
           this.handleProductUnavailable()
           return null;
