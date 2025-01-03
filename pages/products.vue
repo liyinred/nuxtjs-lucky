@@ -24,7 +24,7 @@
 import { ref } from 'vue';
 
 // 使用 Nuxt 3 的 useFetch 获取数据
-const { data, error } = await useFetch('https://44ud77915sf2.vicp.fun/products');
+const { data, error } = await useFetch('https://mini.msbiox.com/api/products');
 
 // 将 API 返回的结果赋值给 products
 const products = ref([]);
