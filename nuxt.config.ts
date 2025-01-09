@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "MSBIO",
-      link: [{ rel: "icon", type: "image/x-icon", href: "/logo.ico" }],
+      // link: [{ rel: "icon", type: "image/x-icon", href: "/logo.ico" }],
     },
     pageTransition: { name: 'page', mode: 'out-in' }
   },
@@ -17,5 +17,5 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { redirect: 'https://msbiox.com/' },
   },
-  plugins: ["~/plugins/vue-lucky-canvas.js"],
+  // plugins: ["~/plugins/vue-lucky-canvas.js"],
 });
