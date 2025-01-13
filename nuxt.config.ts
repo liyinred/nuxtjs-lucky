@@ -14,8 +14,12 @@ export default defineNuxtConfig({
     host: "0.0.0.0",
     port: 3000,
   },
-  routeRules: {
-    '/': { redirect: 'https://msbiox.com/' },
-  },
+  css: [
+    // 引入全局 CSS 文件
+    '~/assets/css/global.css',
+  ],
+  // routeRules: {
+  //   '/': { redirect: 'https://msbiox.com/' },
+  // },
   // plugins: ["~/plugins/vue-lucky-canvas.js"],
 });

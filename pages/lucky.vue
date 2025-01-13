@@ -6,8 +6,8 @@
     </view>
     <view v-else
       style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <img :src="imageSrc" style="margin-top: 20px; width: 60%; height: auto;" />
-      <view style="font-weight: bold;font-size: 35px;font-style: italic;">{{ resultMessage }}</view>
+      <img :src="imageSrc" style="margin-top: 20px; width: 50%; height: auto;" />
+      <view style="font-weight: bold;font-size: 35px;">{{ resultMessage }}</view>
       <view style="font-size: 20px; margin-top: 10px;">当前时间：{{ shanghaiTime }}</view>
     </view>
     <view v-if="resultMessage1 && isLuckyWheelVisible"
