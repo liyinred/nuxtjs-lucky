@@ -4,6 +4,9 @@
       :navigation="{
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
+      }" :pagination="{
+        el: '.swiper-pagination',
+        clickable: true,
       }" class="swiper swiper-fade swiper-initialized swiper-horizontal swiper-watch-progress swiper-backface-hidden">
       <swiper-slide v-for="(image, index) in images" :key="index">
         <img :src="image" alt="Slide" class="swiper-image" />
@@ -12,13 +15,16 @@
       <!-- 导航箭头 -->
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
+
+      <!-- 分页器 -->
+      <div class="swiper-pagination"></div>
     </swiper>
   </div>
 </template>
 
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Autoplay, EffectFade, Navigation } from 'swiper/modules';
+import { Autoplay, EffectFade, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
 
 export default {
@@ -35,7 +41,7 @@ export default {
 
     return {
       images,
-      modules: [Autoplay, EffectFade, Navigation],
+      modules: [Autoplay, EffectFade, Navigation, Pagination],
     };
   },
 };
@@ -102,6 +108,33 @@ export default {
 .swiper-button-prev {
   left: 10px;
   /* 左侧箭头位置 */
+}
+
+.swiper-pagination {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.swiper-pagination-bullet {
+  background: rgb(255, 255, 255);
+  opacity: 0.5;
+  width: 30px;
+  height: 4px;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  /* transition: width 0.3s, background 0.3s; */
+  transition: all 0.3s, background 0.3s;
+}
+
+.swiper-pagination-bullet-active {
+  background: #fff;
+  opacity: 1;
+  width: 31px;
+  height: 5px;
 }
 
 @media (max-width: 768px) {
