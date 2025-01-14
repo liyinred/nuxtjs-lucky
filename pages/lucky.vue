@@ -6,13 +6,13 @@
     </view>
     <view v-else
       style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <img :src="imageSrc" style="margin-top: 20px; width: 50%; height: auto;" />
-      <view style="font-weight: bold;font-size: 35px;">{{ resultMessage }}</view>
+      <img :src="msbioLogo" style="margin-top: 20px; width: 50%; height: auto;" />
+      <view style="font-weight: bold;font-size: 30px;">{{ resultMessage }}</view>
       <view style="font-size: 20px; margin-top: 10px;">当前时间：{{ shanghaiTime }}</view>
     </view>
     <view v-if="resultMessage1 && isLuckyWheelVisible"
       style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <img :src="imageSrc" style="margin-top: 20px; width: 50%; height: auto;" />
+      <img :src="msbioLogo" style="margin-top: 20px; width: 50%; height: auto;" />
       <view style="font-weight: bold; font-size: 30px;">您获取的奖品为：{{ resultMessage1 }}</view>
       <view style="font-size: 15px;color: gray;">请勿刷新界面并截图以保存获奖记录</view>
       <view style="font-size: 20px; margin-top: 10px;">当前时间：{{ shanghaiTime }}</view>
@@ -58,7 +58,7 @@ export default {
   },
   data() {
     return {
-      imageSrc: 'https://cdn-fusion.imgcdn.store/i/2024/2W369651lUfsVCRb.png',
+      msbioLogo: 'msbio.avif',
       blocks: [
         // { padding: '13px', background: '#617df2' },
         {
