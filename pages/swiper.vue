@@ -46,17 +46,6 @@ export default {
   width: 100vw;
 }
 
-@media (max-width: 768px) {
-  .swiper-image {
-    width: auto;
-    height: 70vh;
-    /* 使图片高度占满屏幕高度 */
-    object-fit: cover;
-    object-position: center;
-    /* 确保图片居中显示 */
-  }
-}
-
 .swiper {
   width: 100%;
   height: 100%;
@@ -113,5 +102,16 @@ export default {
 .swiper-button-prev {
   left: 10px;
   /* 左侧箭头位置 */
+}
+
+@media (max-width: 768px) {
+  .swiper-image {
+    width: auto;
+    height: 70vh;
+    /* 使图片高度占满屏幕高度 */
+    object-fit: cover;
+    object-position: center;
+    /* 确保图片居中显示 */
+  }
 }
 </style>
