@@ -34,9 +34,9 @@ export default {
   },
   setup() {
     const images = [
-      '/s1.webp',
-      '/s2.jpeg',
-      '/s3.jpeg',
+      '/swiper/c1.avif',
+      '/swiper/c2.avif',
+      '/swiper/c3.avif',
     ];
 
     return {
@@ -53,8 +53,8 @@ export default {
 }
 
 .swiper {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
 }
 
 .swiper-slide {
