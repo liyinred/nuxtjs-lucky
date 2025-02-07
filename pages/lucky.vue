@@ -1,61 +1,133 @@
 <template>
-  <view style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
-    <view v-if="isLuckyWheelVisible" style="margin-top: 20px;">
-      <LuckyWheel ref="myLucky" width="350rpx" height="350rpx" :prizes="prizes" :blocks="blocks" :buttons="buttons"
-        @start="startCallback" @end="endCallback" />
-    </view>
-    <view v-else
+  <div style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
+    <!-- <div v-if="isLuckyWheelVisible" style="margin-top: 20px;font-weight: bold;font-size: 20px;">
+      {{ $t('wheel') }}
+    </div> -->
+    <div v-if="isLuckyWheelVisible" style="margin-top: 20px;">
+      <LuckyWheel ref="myLucky" width="350px" height="350px" :prizes="prizes" :blocks="blocks" :buttons="buttons"
+        :default-config="default1" @start="startCallback" @end="endCallback" />
+    </div>
+    <div v-else
       style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
       <img :src="msbioLogo" style="margin-top: 20px; width: 50%; height: auto;" />
-      <view style="font-weight: bold;font-size: 30px;">{{ resultMessage }}</view>
-      <view style="font-size: 20px; margin-top: 10px;">当前时间：{{ shanghaiTime }}</view>
-    </view>
-    <view v-if="resultMessage1 && isLuckyWheelVisible"
-      style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div style="font-weight: bold;font-size: 30px;">{{ resultMessage }}</div>
+      <div style="font-size: 20px; margin-top: 10px;">{{ $t('time') }}{{ shanghaiTime }}</div>
+    </div>
+    <div v-if="resultMessage1 && isLuckyWheelVisible"
+      style="margin-top: 0px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
       <img :src="msbioLogo" style="margin-top: 20px; width: 50%; height: auto;" />
-      <view style="font-weight: bold; font-size: 30px;">您获取的奖品为：{{ resultMessage1 }}</view>
-      <view style="font-size: 15px;color: gray;">请勿刷新界面并截图以保存获奖记录</view>
-      <view style="font-size: 20px; margin-top: 10px;">当前时间：{{ shanghaiTime }}</view>
-    </view>
-  </view>
+      <div style="font-weight: bold; font-size: 30px;">{{ $t('prize') }}{{ resultMessage1 }}</div>
+      <div style="font-size: 15px;color: gray;">{{ $t('user') }}{{ user }}</div>
+      <div style="font-size: 15px;color: gray;">{{ $t('scrs') }}</div>
+      <div style="font-size: 20px; margin-top: 10px;">{{ $t('time') }}{{ shanghaiTime }}</div>
+    </div>
+  </div>
+
+  <!-- <div>
+    <div>
+      <button @click="setLocale('en')">en</button>
+      <button @click="setLocale('cn')">cn</button>
+      <p>{{ $t('welcome') }}</p>
+    </div>
+  </div> -->
+
 </template>
 
-<script>
-export default {
-  setup() {
+<script setup>
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+// 使用 vue-i18n 设置语言
+const { setLocale } = useI18n()
+
+// 在组件挂载时自动设置语言
+onMounted(() => {
+  const browserLanguage = navigator.language || 'en'
+  console.log(browserLanguage)
+
+  let locale = 'en'
+
+  if (browserLanguage.includes('zh')) {
+    locale = 'cn'
     useHead({
       title: 'MSBIO抽奖'
     })
-    const shanghaiTime = ref('');
+  } else if (browserLanguage.includes('en')) {
+    locale = 'en'
+    useHead({
+      title: 'MSBIO Lucky'
+    })
+  }
 
-    const updateTime = () => {
-      const now = new Date();
-      shanghaiTime.value = now.toLocaleString('zh-CN', {
-        timeZone: 'Asia/Shanghai',
-        hour12: false,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-    };
+  setLocale(locale)
+})
 
-    let intervalId;
-    onMounted(() => {
-      updateTime(); // 初始化时间
-      intervalId = setInterval(updateTime, 1000); // 每秒更新一次时间
-    });
+// 获取并显示上海时间
+const shanghaiTime = ref('')
 
-    onUnmounted(() => {
-      clearInterval(intervalId); // 组件卸载时清除定时器
-    });
+const updateTime = () => {
+  const now = new Date()
+  shanghaiTime.value = now.toLocaleString('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
 
-    return {
-      shanghaiTime
-    };
-  },
+let intervalId
+onMounted(() => {
+  updateTime() // 初始化时间
+  intervalId = setInterval(updateTime, 1000) // 每秒更新一次时间
+})
+
+onUnmounted(() => {
+  clearInterval(intervalId) // 组件卸载时清除定时器
+})
+
+</script>
+
+
+<script>
+export default {
+  // setup() {
+  //   useHead({
+  //     title: 'MSBIO抽奖'
+  //   })
+  //   const shanghaiTime = ref('');
+
+  //   const updateTime = () => {
+  //     const now = new Date();
+  //     shanghaiTime.value = now.toLocaleString('zh-CN', {
+  //       timeZone: 'Asia/Shanghai',
+  //       hour12: false,
+  //       year: 'numeric',
+  //       month: '2-digit',
+  //       day: '2-digit',
+  //       hour: '2-digit',
+  //       minute: '2-digit',
+  //       second: '2-digit'
+  //     });
+  //   };
+
+  //   let intervalId;
+  //   onMounted(() => {
+  //     updateTime(); // 初始化时间
+  //     intervalId = setInterval(updateTime, 1000); // 每秒更新一次时间
+  //   });
+
+  //   onUnmounted(() => {
+  //     clearInterval(intervalId); // 组件卸载时清除定时器
+  //   });
+
+  //   return {
+  //     shanghaiTime
+  //   };
+  // },
   data() {
     return {
       msbioLogo: 'msbio.avif',
@@ -139,9 +211,13 @@ export default {
           }]
         }
       ],
+      default1: {
+        speed: 40
+      },
       isLuckyWheelVisible: true,  // 控制LuckyWheel的显示和隐藏
       resultMessage: '',
-      resultMessage1: ''
+      resultMessage1: '',
+      user: ''
     }
   },
   methods: {
@@ -154,7 +230,7 @@ export default {
         const response = await this.fetchLuckyIndex()
         if (response && response.index !== undefined) {
           const index = response.index // 假设接口返回的JSON结构是 { index: 0 }
-
+          this.user = response.user
           // 模拟延迟以展示抽奖动画
           setTimeout(() => {
             // 调用stop停止旋转并传递中奖索引
@@ -170,8 +246,9 @@ export default {
 
     // 抽奖结束会触发end回调
     endCallback(prize) {
-      console.log('恭喜中奖: ' + prize.fonts[0].text)
-      alert('恭喜你抽到 ' + prize.fonts[0].text + '！')
+      const message1 = this.$t('won');
+      console.log('抽到的 prize' + prize.fonts[0].text)
+      alert(message1 + prize.fonts[0].text + '！')
       this.resultMessage1 = prize.fonts[0].text;
     },
 
@@ -180,7 +257,7 @@ export default {
         const urlParams = new URLSearchParams(window.location.search);
         const openid = urlParams.get('openid');
         console.log("openid is ", openid)
-        const response = await fetch(`https://mini.msbiox.com/api/get_lucky_product_id/${openid}`)
+        const response = await fetch(`http://192.168.1.125:8080/get_lucky_product_id/${openid}`)
         if (response.status === 404) {
           this.handleProductUnavailable()
           return null;
@@ -204,29 +281,34 @@ export default {
 
     // 处理产品已抽完的情况
     handleProductUnavailable() {
+      const message1 = this.$t('sry1');
+      const message2 = this.$t('thx');
       this.isLuckyWheelVisible = false;
-      this.showConfirmDialog('很抱歉，产品已经被抽完', () => {
-        this.resultMessage = '十分感谢您的参与';
+      this.showConfirmDialog(message1, () => {
+        this.resultMessage = message2;
+        // this.$router.push('/thanks');
       });
     },
 
     handleProductUnavailable1() {
+      const message1 = this.$t('sry2');
+      const message2 = this.$t('thx');
       this.isLuckyWheelVisible = false;
-      this.showConfirmDialog('很抱歉，你已经参与过次抽奖活动', () => {
-        this.resultMessage = '十分感谢您的参与';
+      this.showConfirmDialog(message1, () => {
+        this.resultMessage = message2;
+        // this.$router.push('/thanks');
       });
     },
 
 
     // 显示确认框，处理用户点击
     showConfirmDialog(message, onConfirm) {
-      // 在点击确认或取消时都执行相同的操作
       const userConfirmed = window.confirm(message);
 
       if (userConfirmed) {
-        onConfirm();  // 点击确认时执行
+        onConfirm();
       } else {
-        onConfirm();  // 点击取消时也执行相同的处理
+        onConfirm();
       }
     }
 
