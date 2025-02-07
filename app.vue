@@ -21,3 +21,25 @@
   filter: blur(1rem);
 }
 </style>
+
+<!-- <script setup>
+import { onMounted } from 'vue'
+
+const { setLocale } = useI18n()
+
+// 在组件挂载时自动设置语言
+onMounted(() => {
+  const browserLanguage = navigator.language || 'en'
+  console.log(browserLanguage)
+
+  let locale = 'en'
+
+  if (browserLanguage.includes('zh')) {
+    locale = 'cn'
+  } else if (browserLanguage.includes('en')) {
+    locale = 'en'
+  }
+
+  setLocale(locale)
+})
+</script> -->
