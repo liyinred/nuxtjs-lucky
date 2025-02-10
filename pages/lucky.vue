@@ -1,18 +1,17 @@
 <template>
   <div style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
-    <!-- <div v-if="isLuckyWheelVisible" style="margin-top: 20px;font-weight: bold;font-size: 20px;">
-      {{ $t('wheel') }}
-    </div> -->
     <div v-if="isLuckyWheelVisible" style="margin-top: 20px;">
       <LuckyWheel ref="myLucky" width="350px" height="350px" :prizes="prizes" :blocks="blocks" :buttons="buttons"
         :default-config="default1" @start="startCallback" @end="endCallback" />
     </div>
+
     <div v-else
       style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
       <img :src="msbioLogo" style="margin-top: 20px; width: 50%; height: auto;" />
       <div style="font-weight: bold;font-size: 30px;">{{ resultMessage }}</div>
       <div style="font-size: 20px; margin-top: 10px;">{{ $t('time') }}{{ shanghaiTime }}</div>
     </div>
+
     <div v-if="resultMessage1 && isLuckyWheelVisible"
       style="margin-top: 0px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
       <img :src="msbioLogo" style="margin-top: 20px; width: 50%; height: auto;" />
@@ -21,16 +20,13 @@
       <div style="font-size: 15px;color: gray;">{{ $t('scrs') }}</div>
       <div style="font-size: 20px; margin-top: 10px;">{{ $t('time') }}{{ shanghaiTime }}</div>
     </div>
+
+    <!-- <NuxtLink to="/about"
+      style="background-color: aqua;border-radius: 10px;width: 100px;text-align: center;width: 120px;margin-top: 20px;">
+      Home Page
+    </NuxtLink> -->
+
   </div>
-
-  <!-- <div>
-    <div>
-      <button @click="setLocale('en')">en</button>
-      <button @click="setLocale('cn')">cn</button>
-      <p>{{ $t('welcome') }}</p>
-    </div>
-  </div> -->
-
 </template>
 
 <script setup>
@@ -257,7 +253,7 @@ export default {
         const urlParams = new URLSearchParams(window.location.search);
         const openid = urlParams.get('openid');
         console.log("openid is ", openid)
-        const response = await fetch(`http://192.168.1.125:8080/get_lucky_product_id/${openid}`)
+        const response = await fetch(`https://mini.msbiox.com/api/get_lucky_product_id/${openid}`)
         if (response.status === 404) {
           this.handleProductUnavailable()
           return null;
