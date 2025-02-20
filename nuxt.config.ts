@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: false },
@@ -18,22 +17,15 @@ export default defineNuxtConfig({
     port: 3000,
   },
 
-  css: [
-    // 引入全局 CSS 文件
-    "~/assets/css/global.css",
-    "~/assets/css/tailwindcss.css",
-  ],
+  css: ["~/assets/css/global.css"],
 
   routeRules: {
     // '/': { redirect: 'https://msbiox.com/' },
     "/": { redirect: "/lucky" },
   },
   // plugins: ["~/plugins/vue-lucky-canvas.js"],
-  vite: {
-    plugins: [tailwindcss()],
-  },
 
-  modules: ["@nuxtjs/i18n"],
+  modules: ["@nuxtjs/i18n", "@nuxtjs/tailwindcss"],
   i18n: {
     vueI18n: "./i18n.config.ts", // if you are using custom path, default
   },

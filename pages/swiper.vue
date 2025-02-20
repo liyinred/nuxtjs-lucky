@@ -53,8 +53,8 @@ export default {
 }
 
 .swiper {
-  /* width: 100%;
-  height: 100%; */
+  width: 100%;
+  height: 100%;
 }
 
 .swiper-slide {
