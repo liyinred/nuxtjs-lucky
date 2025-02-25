@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "MSBIO",
-      // link: [{ rel: "icon", type: "image/x-icon", href: "/logo.ico" }],
+      link: [{ rel: "icon", href: "/favicon.ico" }],
     },
     pageTransition: { name: "page", mode: "out-in" },
   },
