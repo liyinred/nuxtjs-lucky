@@ -55,8 +55,8 @@
 
       <!-- Documents Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <a v-for="document in filteredDocuments" :key="document.id" :href="`/${encodeURIComponent(document.image)}`"
-          target="_blank" rel="noopener noreferrer"
+        <a v-for="document in filteredDocuments" :key="document.id" :href="document.image" target="_blank"
+          rel="noopener noreferrer"
           class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow block no-underline"
           @click="handleCardClick(document, $event)">
           <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
