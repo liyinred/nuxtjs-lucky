@@ -348,35 +348,35 @@ const documents = ref([
     title: "Biotech Cleaning Schedule",
     category: "Cleaning",
     date: "2025-06-02",
-    image: "L02_Biotech_Cleaning_Schedule-1.png",
+    image: "/portal/L02_Biotech_Cleaning_Schedule-1.png",
   },
   {
     id: 2,
     title: "Cleaning Checklist",
     category: "Cleaning",
     date: "2025-05-28",
-    image: "L02_Cleaning_Checklist-1.png",
+    image: "/portal/L02_Cleaning_Checklist-1.png",
   },
   {
     id: 3,
     title: "Safety Checklist",
     category: "Safety",
     date: "2025-06-01",
-    image: "L02_Safety_Checklist-1.png",
+    image: "/portal/L02_Safety_Checklist-1.png",
   },
   {
     id: 4,
     title: "Sanitation Duty Schedule",
     category: "Schedule",
     date: "2025-05-04",
-    image: "L02_Sanitation Duty Schedule (May-June)-1.png",
+    image: "/portal/L02_Sanitation Duty Schedule (May-June)-1.png",
   },
   {
     id: 5,
     title: "化学计算工具",
     category: "Tool",
     date: "2025-06-05", // 改为YYYY-MM-DD格式
-    image: "logo.png",
+    image: "/portal/logo.png",
   },
 ]);
 
@@ -474,7 +474,7 @@ const calculate = async () => {
         molecularWeight.value === "" ? null : molecularWeight.value,
     };
 
-    const response = await fetch("http://localhost:8082/molarity_calculator", {
+    const response = await fetch("http://192.168.10.96:8082/molarity_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -583,7 +583,7 @@ const dilution_calculate = async () => {
       v2Unit: v2Unit.value,
     };
 
-    const response = await fetch("http://localhost:8082/dilution_calculator", {
+    const response = await fetch("http://192.168.10.96:8082/dilution_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -653,7 +653,7 @@ const massCalculator = async () => {
   }
 
   try {
-    const response = await fetch("http://localhost:8082/mass_calculator", {
+    const response = await fetch("http://192.168.10.96:8082/mass_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
