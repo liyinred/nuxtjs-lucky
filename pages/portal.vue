@@ -9,7 +9,7 @@
             <div>
               <h1 class="text-3xl font-bold text-gray-900">MSBIO Lab Portal</h1>
               <p class="mt-1 text-sm text-gray-500">
-                Laboratory L02 - Documents and Schedules
+                Laboratory L02 - Documents and Tools
               </p>
             </div>
           </div>
@@ -55,8 +55,8 @@
 
       <!-- Documents Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <a v-for="document in filteredDocuments" :key="document.id"
-          :href="`/portal/${encodeURIComponent(document.image)}`" target="_blank" rel="noopener noreferrer"
+        <a v-for="document in filteredDocuments" :key="document.id" :href="`/${encodeURIComponent(document.image)}`"
+          target="_blank" rel="noopener noreferrer"
           class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow block no-underline"
           @click="handleCardClick(document, $event)">
           <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
@@ -347,65 +347,72 @@ const documents = ref([
     id: 1,
     title: "Biotech Cleaning Schedule",
     category: "Cleaning",
-    date: "2025-06-02",
+    date: "2025-06-03",
     image: "/portal/L02_Biotech_Cleaning_Schedule-1.png",
   },
   {
     id: 2,
     title: "Cleaning Checklist",
     category: "Cleaning",
-    date: "2025-05-28",
+    date: "2025-06-03",
     image: "/portal/L02_Cleaning_Checklist-1.png",
   },
   {
     id: 3,
     title: "Safety Checklist",
     category: "Safety",
-    date: "2025-06-01",
+    date: "2025-06-03",
     image: "/portal/L02_Safety_Checklist-1.png",
   },
   {
     id: 4,
     title: "Sanitation Duty Schedule",
     category: "Schedule",
-    date: "2025-05-04",
+    date: "2025-06-03",
     image: "/portal/L02_Sanitation Duty Schedule (May-June)-1.png",
   },
   {
     id: 5,
     title: "化学计算工具",
     category: "Tool",
-    date: "2025-06-05", // 改为YYYY-MM-DD格式
+    date: "2025-06-06", // 改为YYYY-MM-DD格式
     image: "/portal/logo.png",
   },
 ]);
 
 // 计算上海时间与给定日期的天数差
 const formatUpdatedDate = (dateString) => {
-  // 获取上海时间（UTC+8）
-  const now = new Date();
-  const shanghaiOffset = 8 * 60 * 60 * 1000; // 上海时区偏移量（毫秒）
-  const shanghaiTime = new Date(now.getTime() + shanghaiOffset);
+  if (!dateString || isNaN(new Date(dateString))) {
+    return "Invalid date";
+  }
 
-  // 设置时间为00:00:00以便只比较日期
-  const today = new Date(shanghaiTime);
-  today.setHours(0, 0, 0, 0);
+  try {
+    // 获取上海时区的当前日期(00:00:00)
+    const options = { timeZone: 'Asia/Shanghai' };
+    const todayStr = new Date().toLocaleDateString('en-US', options);
+    const today = new Date(todayStr);
 
-  // 解析输入日期
-  const inputDate = new Date(dateString);
-  inputDate.setHours(0, 0, 0, 0);
+    // 解析输入日期并转换为上海时区日期
+    const inputDate = new Date(dateString);
+    const inputDateStr = inputDate.toLocaleDateString('en-US', options);
+    const shanghaiInputDate = new Date(inputDateStr);
 
-  // 计算天数差
-  const timeDiff = today - inputDate;
-  const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24) - 1);
+    // 计算天数差
+    const timeDiff = today - shanghaiInputDate;
+    const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
-  // 根据天数差返回不同的文本
-  if (dayDiff === 0) {
-    return "Updated today";
-  } else if (dayDiff === 1) {
-    return "Updated 1 day ago";
-  } else {
-    return `Updated ${dayDiff} days ago`;
+    if (dayDiff < 0) {
+      return "Future date";
+    } else if (dayDiff === 0) {
+      return "Updated today";
+    } else if (dayDiff === 1) {
+      return "Updated 1 day ago";
+    } else {
+      return `Updated ${dayDiff} days ago`;
+    }
+  } catch (e) {
+    console.error("Date formatting error:", e);
+    return "Date error";
   }
 };
 
