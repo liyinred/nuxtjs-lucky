@@ -2,31 +2,65 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center">
-          <div class="flex items-center space-x-4">
-            <img src="/portal/logo.png" class="h-20 w-auto" />
+      <div class="max-w-7xl mx-auto px-4 py-4 sm:py-6 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <img src="/portal/logo.png" class="h-16 sm:h-20 w-auto" />
             <div>
-              <h1 class="text-3xl font-bold text-gray-900">MSBIO Lab Portal</h1>
-              <p class="mt-1 text-sm text-gray-500">
+              <h1 class="text-xl sm:text-3xl font-bold text-gray-900">MSBIO Lab Portal</h1>
+              <p class="mt-1 text-xs sm:text-sm text-gray-500">
                 Laboratory L02 - Documents and Tools
               </p>
             </div>
           </div>
-          <div class="flex items-center space-x-4">
-            <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-              Notifications
-            </button>
-            <!-- <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-              <span class="text-gray-600 font-medium">JD</span>
-            </div> -->
+          <div class="w-full md:w-auto">
+            <span v-if="isAuthenticated"
+              class="inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
+              <span class="text-gray-700 dark:text-gray-300 text-base sm:text-lg font-medium tracking-wide">
+                👋 Welcome, <span class="text-indigo-600 dark:text-indigo-400">{{ username }}</span>
+              </span>
+
+              <button @click="logout"
+                class="px-3 py-1 sm:px-4 sm:py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:from-red-600 hover:to-red-700 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 text-sm sm:text-base">
+                Logout
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 inline ml-1" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+                    clip-rule="evenodd" />
+                </svg>
+              </button>
+            </span>
           </div>
         </div>
       </div>
     </header>
 
+    <!-- Login Form (shown when not authenticated) -->
+    <div v-if="!isAuthenticated" class="w-[90%] sm:max-w-md mx-auto mt-16 p-8 bg-white rounded-lg shadow-md">
+      <h2 class="text-2xl font-bold text-center mb-6">Login to MSBIO Portal</h2>
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+          <input v-model="loginForm.username" type="text" id="username" required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input v-model="loginForm.password" type="password" id="password" required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+        <div>
+          <button type="submit"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <main v-if="isAuthenticated" class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <!-- Search and Filter -->
       <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div class="relative w-full sm:w-64">
@@ -77,212 +111,243 @@
         </a>
       </div>
 
-      <!-- Chemistry Tools Modal -->
-      <div v-if="showChemistryModal" @click.self="closeModal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto">
-          <div class="p-6">
-            <div class="flex justify-between items-center mb-6">
-              <h2 class="text-2xl font-bold text-gray-800">化学计算工具</h2>
-              <button @click="showChemistryModal = false" class="text-gray-500 hover:text-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+      <!-- Markdown Modal -->
+      <transition enter-active-class="transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 transform translate-y-4" enter-to-class="opacity-100 transform translate-y-0"
+        leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 transform translate-y-0"
+        leave-to-class="opacity-0 transform translate-y-4">
+        <div v-if="showMarkdownModal" @click.self="closeModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <transition enter-active-class="transition-all duration-300 ease-out"
+            enter-from-class="opacity-0 transform scale-95" enter-to-class="opacity-100 transform scale-100"
+            leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 transform scale-100"
+            leave-to-class="opacity-0 transform scale-95">
+            <div class="bg-white rounded-lg shadow-xl max-w-[90vw] md:max-w-[65vw] w-full max-h-[90vh] flex flex-col">
+              <div class="p-4 border-b flex justify-between items-center">
+                <div class="text-2xl font-bold">{{ currentMarkdownTitle }}</div>
+                <button @click="showMarkdownModal = false" class="text-gray-500 hover:text-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div class="p-6 overflow-y-auto flex-1 markdown-body" v-html="renderedMarkdown"></div>
             </div>
+          </transition>
+        </div>
+      </transition>
 
-            <div class="flex flex-col gap-5">
-              <!-- Molarity Calculator -->
-              <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <h3 class="font-medium text-lg mb-3 text-gray-800">
-                  Molarity Calculator
-                </h3>
-                <div class="space-y-4">
-                  <div class="bg-white p-10 rounded-lg shadow-sm">
-                    <div class="flex items-center justify-center space-x-2 mb-4">
-                      <!-- Mass 输入框 -->
-                      <div class="flex items-center">
-                        <input v-model.number="mass" type="number"
-                          class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Mass" />
-                        <select v-model="massUnit"
-                          class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          <option value="mg">mg</option>
-                          <option value="g">g</option>
-                          <option value="kg">kg</option>
-                        </select>
-                      </div>
-
-                      <!-- 等号 -->
-                      <span class="mx-2 text-gray-600 font-bold">=</span>
-
-                      <!-- Concentration 输入框 -->
-                      <div class="flex items-center">
-                        <input v-model.number="concentration" type="number"
-                          class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Conc." />
-                        <select v-model="concentrationUnit"
-                          class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          <option value="mM">mM</option>
-                          <option value="M">M</option>
-                        </select>
-                      </div>
-
-                      <!-- 乘号 -->
-                      <span class="mx-2 text-gray-600 font-bold">×</span>
-
-                      <!-- Volume 输入框 -->
-                      <div class="flex items-center">
-                        <input v-model.number="volume" type="number"
-                          class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Volume" />
-                        <select v-model="volumeUnit"
-                          class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          <option value="μL">μL</option>
-                          <option value="mL">mL</option>
-                          <option value="L">L</option>
-                        </select>
-                      </div>
-
-                      <!-- 乘号 -->
-                      <span class="mx-2 text-gray-600 font-bold">×</span>
-
-                      <!-- Molecular Weight 输入框 -->
-                      <div class="flex items-center">
-                        <input v-model.number="molecularWeight" type="number"
-                          class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="MW" />
-                        <span class="ml-2 text-gray-600">g/mol</span>
-                      </div>
-                    </div>
-
-                    <!-- 按钮区域 -->
-                    <div class="flex justify-end space-x-2 mt-6">
-                      <button @click="reset1"
-                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                        重置
-                      </button>
-                      <button @click="calculate"
-                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        计算
-                      </button>
-                    </div>
-                  </div>
-                </div>
+      <!-- Chemistry Tools Modal -->
+      <transition enter-active-class="transition-opacity duration-300 ease-out" enter-from-class="opacity-0"
+        enter-to-class="opacity-100" leave-active-class="transition-opacity duration-200 ease-in"
+        leave-from-class="opacity-100" leave-to-class="opacity-0">
+        <div v-if="showChemistryModal" @click.self="closeModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div class="bg-white rounded-lg shadow-xl max-w-[90vw] md:max-w-[60vw] w-full max-h-[90vh] overflow-auto">
+            <div class="p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">化学计算工具</h2>
+                <button @click="showChemistryModal = false" class="text-gray-500 hover:text-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
 
-              <!-- Molecular Weight Calculator -->
-              <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <h3 class="font-medium text-lg mb-3 text-gray-800">
-                  Molecular Weight Calculator
-                </h3>
-                <div class="space-y-4">
-                  <div class="bg-white p-10 rounded-lg shadow-sm">
-                    <!-- 第一行：输入框和计算按钮 -->
-                    <div class="flex space-x-2 mb-4">
-                      <input v-model="molecularFormula" type="text" placeholder="请输入分子式(如H2O)"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                      <button @click="massCalculator"
-                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        计算
-                      </button>
-                    </div>
-
-                    <!-- 第二行：总分子量显示 -->
-                    <div class="flex items-center">
-                      <label class="mr-2 text-gray-700">总分子量:</label>
-                      <input :value="totalMass" readonly
-                        class="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                      <span class="ml-2 text-gray-700">g/mol</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Dilution Calculator -->
-              <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <h3 class="font-medium text-lg mb-3 text-gray-800">
-                  Dilution Calculator
-                </h3>
-                <div class="space-y-4">
-                  <div class="bg-white p-10 rounded-lg shadow-sm">
-                    <!-- 输入框行 -->
-                    <div class="flex items-center justify-center space-x-2 mb-4">
-                      <!-- 初始溶液 -->
-                      <div class="flex items-center justify-center space-x-2">
+              <div class="flex flex-col gap-5">
+                <!-- Molarity Calculator -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h3 class="font-medium text-lg mb-3 text-gray-800">
+                    Molarity Calculator
+                  </h3>
+                  <div class="space-y-4">
+                    <div class="bg-white p-10 rounded-lg shadow-sm">
+                      <!-- 使用flex-wrap实现自动换行 -->
+                      <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
+                        <!-- Mass 输入框 -->
                         <div class="flex items-center">
-                          <input v-model.number="c1" type="number"
+                          <input v-model.number="mass" type="number"
                             class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="C1" />
-                          <select v-model="c1Unit"
+                            placeholder="Mass" />
+                          <select v-model="massUnit"
                             class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="μM">μM</option>
-                            <option value="mM">mM</option>
-                            <option value="M">M</option>
+                            <option value="mg">mg</option>
+                            <option value="g">g</option>
+                            <option value="kg">kg</option>
                           </select>
                         </div>
 
-                        <span class="mx-2 text-gray-600 font-bold">×</span>
-
-                        <div class="flex items-center">
-                          <input v-model.number="v1" type="number"
-                            class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="V1" />
-                          <select v-model="v1Unit"
-                            class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="μL">μL</option>
-                            <option value="mL">mL</option>
-                            <option value="L">L</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <!-- 等号 -->
-                      <div class="flex justify-center">
+                        <!-- 等号 -->
                         <span class="mx-2 text-gray-600 font-bold">=</span>
-                      </div>
 
-                      <!-- 稀释后溶液 -->
-                      <div class="flex items-center justify-center space-x-2">
+                        <!-- Concentration 输入框 -->
                         <div class="flex items-center">
-                          <input v-model.number="c2" type="number"
+                          <input v-model.number="concentration" type="number"
                             class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="C2" />
-                          <select v-model="c2Unit"
+                            placeholder="Conc." />
+                          <select v-model="concentrationUnit"
                             class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="μM">μM</option>
                             <option value="mM">mM</option>
                             <option value="M">M</option>
                           </select>
                         </div>
 
+                        <!-- 乘号 -->
                         <span class="mx-2 text-gray-600 font-bold">×</span>
 
+                        <!-- Volume 输入框 -->
                         <div class="flex items-center">
-                          <input v-model.number="v2" type="number"
+                          <input v-model.number="volume" type="number"
                             class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="V2" />
-                          <select v-model="v2Unit"
+                            placeholder="Volume" />
+                          <select v-model="volumeUnit"
                             class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="μL">μL</option>
                             <option value="mL">mL</option>
                             <option value="L">L</option>
                           </select>
                         </div>
+
+                        <!-- 乘号 -->
+                        <span class="mx-2 text-gray-600 font-bold">×</span>
+
+                        <!-- Molecular Weight 输入框 -->
+                        <div class="flex items-center">
+                          <input v-model.number="molecularWeight" type="number"
+                            class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="MW" />
+                          <span class="ml-2 text-gray-600">g/mol</span>
+                        </div>
+                      </div>
+
+                      <!-- 按钮区域 -->
+                      <div class="flex flex-wrap justify-end gap-2 mt-6">
+                        <button @click="reset1"
+                          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                          重置
+                        </button>
+                        <button @click="calculate"
+                          class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                          计算
+                        </button>
                       </div>
                     </div>
+                  </div>
+                </div>
 
-                    <!-- 按钮区域 -->
-                    <div class="flex justify-end space-x-2 mt-6">
-                      <button @click="reset2"
-                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                        重置
-                      </button>
-                      <button @click="dilution_calculate"
-                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        计算
-                      </button>
+                <!-- Molecular Weight Calculator -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h3 class="font-medium text-lg mb-3 text-gray-800">
+                    Molecular Weight Calculator
+                  </h3>
+                  <div class="space-y-4">
+                    <div class="bg-white p-4 md:p-10 rounded-lg shadow-sm max-w-full overflow-hidden">
+                      <!-- 第一行：输入框和计算按钮 -->
+                      <div class="flex flex-wrap gap-2 mb-4 w-full">
+                        <input v-model="molecularFormula" type="text" placeholder="请输入分子式(如H2O)"
+                          class="min-w-[150px] flex-grow px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        <button @click="massCalculator"
+                          class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 whitespace-nowrap">
+                          计算
+                        </button>
+                      </div>
+
+                      <!-- 第二行：总分子量显示 -->
+                      <div class="flex flex-wrap gap-2 items-center w-full">
+                        <label class="text-gray-700 whitespace-nowrap">总分子量:</label>
+                        <input :value="totalMass" readonly
+                          class="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px] min-w-[100px]" />
+                        <span class="text-gray-700 whitespace-nowrap">g/mol</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dilution Calculator -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h3 class="font-medium text-lg mb-3 text-gray-800">
+                    Dilution Calculator
+                  </h3>
+                  <div class="space-y-4">
+                    <div class="bg-white p-10 rounded-lg shadow-sm">
+                      <div class="flex flex-wrap items-center justify-center gap-2 mb-4">
+                        <!-- 初始溶液 - 现在作为一个可换行的单元 -->
+                        <div class="flex flex-wrap items-center justify-center gap-2">
+                          <div class="flex items-center">
+                            <input v-model.number="c1" type="number"
+                              class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="C1" />
+                            <select v-model="c1Unit"
+                              class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                              <option value="μM">μM</option>
+                              <option value="mM">mM</option>
+                              <option value="M">M</option>
+                            </select>
+                          </div>
+
+                          <span class="text-gray-600 font-bold">×</span>
+
+                          <div class="flex items-center">
+                            <input v-model.number="v1" type="number"
+                              class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="V1" />
+                            <select v-model="v1Unit"
+                              class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                              <option value="μL">μL</option>
+                              <option value="mL">mL</option>
+                              <option value="L">L</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <!-- 等号 -->
+                        <div class="flex justify-center">
+                          <span class="text-gray-600 font-bold">=</span>
+                        </div>
+
+                        <!-- 稀释后溶液 - 现在作为一个可换行的单元 -->
+                        <div class="flex flex-wrap items-center justify-center gap-2">
+                          <div class="flex items-center">
+                            <input v-model.number="c2" type="number"
+                              class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="C2" />
+                            <select v-model="c2Unit"
+                              class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                              <option value="μM">μM</option>
+                              <option value="mM">mM</option>
+                              <option value="M">M</option>
+                            </select>
+                          </div>
+
+                          <span class="text-gray-600 font-bold">×</span>
+
+                          <div class="flex items-center">
+                            <input v-model.number="v2" type="number"
+                              class="w-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="V2" />
+                            <select v-model="v2Unit"
+                              class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                              <option value="μL">μL</option>
+                              <option value="mL">mL</option>
+                              <option value="L">L</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 按钮区域 -->
+                      <div class="flex justify-end space-x-2 mt-6">
+                        <button @click="reset2"
+                          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                          重置
+                        </button>
+                        <button @click="dilution_calculate"
+                          class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                          计算
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -290,7 +355,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </transition>
 
       <!-- Empty State -->
       <div v-if="filteredDocuments.length === 0" class="text-center py-12">
@@ -337,17 +402,131 @@
 <script setup>
 import { ref, computed } from "vue";
 import Swal from "sweetalert2";
+import MarkdownIt from 'markdown-it';
+import mk from '@traptitech/markdown-it-katex';
+import 'katex/dist/katex.min.css';
+
 
 useHead({
   title: "MSBIO Portal",
 });
+
+const loginForm = ref({
+  username: '',
+  password: ''
+});
+
+const isAuthenticated = ref(false);
+const username = ref('');
+const role = ref('');
+
+// 从 JWT token 解码 payload
+const decodeJwtPayload = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(base64));
+    console.log(payload, Date.now())
+    return payload;
+  } catch (error) {
+    console.error('Failed to decode JWT:', error);
+    return null;
+  }
+};
+
+// 检查认证状态
+const checkAuth = () => {
+  const token = localStorage.getItem('jwt_token');
+  console.log('JWT: ', token);
+
+  if (token) {
+    const payload = decodeJwtPayload(token);
+
+    if (payload && payload.exp * 1000 > Date.now()) {
+      isAuthenticated.value = true;
+      // 从 payload 中提取 sub 和 role
+      username.value = payload.sub || '';
+      role.value = payload.role || '';
+    } else {
+      localStorage.removeItem('jwt_token');
+      username.value = '';
+      role.value = '';
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Session Expired',
+        text: 'Your session has timed out. Please login again.',
+        confirmButtonText: 'OK'
+      });
+    }
+  }
+};
+
+// 页面加载时检查认证状态
+onMounted(() => {
+  checkAuth();
+});
+
+const handleLogin = async () => {
+  try {
+    const response = await fetch('http://localhost:8082/login_portal', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginForm.value)
+    });
+
+    if (!response.ok) {
+      throw new Error('Login failed');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('jwt_token', data.access_token);
+
+    // 解码 token 并设置用户信息
+    const payload = decodeJwtPayload(data.access_token);
+    if (payload) {
+      username.value = payload.sub || '';
+      role.value = payload.role || '';
+    }
+
+    isAuthenticated.value = true;
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Login Successful',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Login Failed',
+      text: 'Invalid username or password',
+    });
+  }
+};
+
+const logout = () => {
+  localStorage.removeItem('jwt_token');
+  isAuthenticated.value = false;
+  loginForm.value = { username: '', password: '' };
+
+  Swal.fire({
+    title: 'Logged Out',
+    text: 'You have been successfully logged out.',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  });
+};
 
 const documents = ref([
   {
     id: 1,
     title: "Biotech Cleaning Schedule",
     category: "Cleaning",
-    date: "2025-06-03",
+    date: "2025-06-03",// 改为YYYY-MM-DD格式
     image: "/portal/L02_Biotech_Cleaning_Schedule-1.png",
   },
   {
@@ -375,8 +554,16 @@ const documents = ref([
     id: 5,
     title: "化学计算工具",
     category: "Tool",
-    date: "2025-06-06", // 改为YYYY-MM-DD格式
+    date: "2025-06-06",
     image: "/portal/logo.png",
+  },
+  {
+    id: 6,
+    title: "T01.md",
+    category: "markdown",
+    date: "2025-6-12",
+    image: "/portal/logo.png",
+    file: "/portal/markdown/T01.md",
   },
 ]);
 
@@ -421,6 +608,10 @@ const selectedCategories = ref(["All"]);
 const searchQuery = ref("");
 const showChemistryModal = ref(false);
 
+const showMarkdownModal = ref(false);
+const renderedMarkdown = ref('');
+const currentMarkdownTitle = ref('');
+
 const mass = ref(null);
 const massUnit = ref("g");
 const concentration = ref(null);
@@ -440,6 +631,83 @@ const c1Unit = ref("mM");
 const c2Unit = ref("mM");
 const v1Unit = ref("mL");
 const v2Unit = ref("mL");
+
+const handleCardClick = async (document, event) => {
+  if (document.category === "markdown") {
+    event.preventDefault();
+    currentMarkdownTitle.value = document.title;
+    await loadAndRenderMarkdown(document.file);
+    showMarkdownModal.value = true;
+  } else if (document.title === "化学计算工具") {
+    event.preventDefault();
+    showChemistryModal.value = true;
+  }
+};
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true
+}).use(mk);
+
+const loadAndRenderMarkdown = async (filePath) => {
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) throw new Error('Markdown文件加载失败');
+
+    const markdownText = await response.text();
+    renderedMarkdown.value = md.render(markdownText);
+  } catch (error) {
+    console.error('加载Markdown失败:', error);
+    renderedMarkdown.value = `<p>无法加载Markdown内容: ${error.message}</p>`;
+  }
+};
+
+const closeModal = () => {
+  showChemistryModal.value = false;
+  showMarkdownModal.value = false;
+};
+
+function toggleCategory(category) {
+  if (category === "All") {
+    selectedCategories.value = ["All"];
+  } else {
+    if (selectedCategories.value.includes("All")) {
+      selectedCategories.value = selectedCategories.value.filter(
+        (c) => c !== "All"
+      );
+    }
+
+    const index = selectedCategories.value.indexOf(category);
+    if (index > -1) {
+      selectedCategories.value.splice(index, 1);
+
+      if (selectedCategories.value.length === 0) {
+        selectedCategories.value = ["All"];
+      }
+    } else {
+      selectedCategories.value.push(category);
+    }
+  }
+}
+
+const filteredDocuments = computed(() => {
+  return documents.value.filter((doc) => {
+
+    if (role.value === 'user' && doc.category === 'Tool') {
+      return false;
+    }
+    const categoryMatch =
+      selectedCategories.value.includes("All") ||
+      selectedCategories.value.includes(doc.category);
+
+    const searchMatch =
+      doc.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      doc.category.toLowerCase().includes(searchQuery.value.toLowerCase());
+
+    return categoryMatch && searchMatch;
+  });
+});
 
 const calculate = async () => {
   // Check if molecularWeight is filled
@@ -689,143 +957,77 @@ const massCalculator = async () => {
   }
 };
 
-const handleCardClick = (document, event) => {
-  if (document.title === "化学计算工具") {
-    event.preventDefault();
-    showChemistryModal.value = true;
-  }
-};
-
-const closeModal = () => {
-  showChemistryModal.value = false;
-};
-
-function toggleCategory(category) {
-  if (category === "All") {
-    selectedCategories.value = ["All"];
-  } else {
-    if (selectedCategories.value.includes("All")) {
-      selectedCategories.value = selectedCategories.value.filter(
-        (c) => c !== "All"
-      );
-    }
-
-    const index = selectedCategories.value.indexOf(category);
-    if (index > -1) {
-      selectedCategories.value.splice(index, 1);
-
-      if (selectedCategories.value.length === 0) {
-        selectedCategories.value = ["All"];
-      }
-    } else {
-      selectedCategories.value.push(category);
-    }
-  }
-}
-
-const filteredDocuments = computed(() => {
-  return documents.value.filter((doc) => {
-    const categoryMatch =
-      selectedCategories.value.includes("All") ||
-      selectedCategories.value.includes(doc.category);
-
-    const searchMatch =
-      doc.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      doc.category.toLowerCase().includes(searchQuery.value.toLowerCase());
-
-    return categoryMatch && searchMatch;
-  });
-});
 </script>
 
-<!-- <script>
-import { ref, computed } from 'vue';
+<style>
+.markdown-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
 
-export default {
-  setup() {
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
 
-    useHead({
-      title: 'MSBIO Portal'
-    })
+.markdown-body h1 {
+  font-size: 30px;
+}
 
-    const documents = ref([
-      {
-        id: 1,
-        title: 'Biotech Cleaning Schedule',
-        category: 'Cleaning',
-        date: 'Updated 2 days ago',
-        image: 'L02_Biotech_Cleaning_Schedule-1.png'
-      },
-      {
-        id: 2,
-        title: 'Cleaning Checklist',
-        category: 'Cleaning',
-        date: 'Updated 1 week ago',
-        image: 'L02_Cleaning_Checklist-1.png'
-      },
-      {
-        id: 3,
-        title: 'Safety Checklist',
-        category: 'Safety',
-        date: 'Updated 3 days ago',
-        image: 'L02_Safety_Checklist-1.png'
-      },
-      {
-        id: 4,
-        title: 'Sanitation Duty Schedule',
-        category: 'Schedule',
-        date: 'Updated 1 month ago',
-        image: 'L02_Sanitation Duty Schedule (May-June)-1.png'
-      }
-    ]);
+.markdown-body h2 {
+  font-size: 22px;
+}
 
-    const categories = ref(['All', 'Cleaning', 'Safety', 'Schedule']);
-    const selectedCategories = ref(['All']);
-    const searchQuery = ref('');
+.markdown-body h3 {
+  font-size: 18px;
+}
 
-    const toggleCategory = (category) => {
-      if (category === 'All') {
-        selectedCategories.value = ['All'];
-      } else {
-        // Remove 'All' if other categories are selected
-        if (selectedCategories.value.includes('All')) {
-          selectedCategories.value = selectedCategories.value.filter(c => c !== 'All');
-        }
+.markdown-body p {
+  margin-bottom: 20px;
+}
 
-        if (selectedCategories.value.includes(category)) {
-          selectedCategories.value = selectedCategories.value.filter(c => c !== category);
-          // If no categories selected, show all
-          if (selectedCategories.value.length === 0) {
-            selectedCategories.value = ['All'];
-          }
-        } else {
-          selectedCategories.value.push(category);
-        }
-      }
-    };
+.markdown-body p img {
+  display: block;
+  margin: 0 auto;
+}
 
-    const filteredDocuments = computed(() => {
-      return documents.value.filter(doc => {
-        // Filter by category
-        const categoryMatch = selectedCategories.value.includes('All') ||
-          selectedCategories.value.includes(doc.category);
+.markdown-body pre {
+  background-color: #f6f8fa;
+  padding: 1em;
+  border-radius: 4px;
+  overflow: auto;
+}
 
-        // Filter by search query
-        const searchMatch = doc.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          doc.category.toLowerCase().includes(searchQuery.value.toLowerCase());
+.markdown-body code {
+  background-color: rgba(175, 184, 193, 0.2);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
 
-        return categoryMatch && searchMatch;
-      });
-    });
+/* 表格样式 */
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  overflow-x: auto;
+  display: block;
+}
 
-    return {
-      documents,
-      categories,
-      selectedCategories,
-      searchQuery,
-      toggleCategory,
-      filteredDocuments
-    };
-  }
-};
-</script> -->
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid #dfe2e5;
+  padding: 0.5em 1em;
+}
+
+.markdown-body th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+}
+
+.markdown-body tr {
+  background-color: white;
+}
+</style>

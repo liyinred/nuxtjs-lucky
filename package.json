@@ -11,6 +11,11 @@
   },
   "dependencies": {
     "@lucky-canvas/vue": "^0.1.11",
+    "@traptitech/markdown-it-katex": "^3.6.0",
+    "katex": "^0.16.22",
+    "markdown-it": "^14.1.0",
+    "markdown-it-katex": "^2.0.3",
+    "marked": "^15.0.12",
     "sweetalert2": "^11.22.0"
   },
   "devDependencies": {

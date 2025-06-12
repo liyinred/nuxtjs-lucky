@@ -21,7 +21,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     // '/': { redirect: 'https://msbiox.com/' },
-    "/": { redirect: "/lucky" },
+    "/": { redirect: "/portal" },
   },
   // plugins: ["~/plugins/vue-lucky-canvas.js"],
 

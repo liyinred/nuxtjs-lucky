@@ -1,17 +1,14 @@
-import io
-import os
-import shutil
-from typing import Dict, List
-import uuid
-import zipfile
-from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
-import pandas as pd
-
+from fastapi import (
+    FastAPI,
+    HTTPException,
+    HTTPException,
+    Depends,
+)
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-import uvicorn
-import mimetypes
-import re
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+import jwt, re, uvicorn
 
 app = FastAPI()
 
@@ -30,6 +27,100 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# JWT Configuration
+SECRET_KEY = "your-secret-key-here"  # Change this to a strong secret in production
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 1
+
+security = HTTPBearer()
+
+# Mock user database (replace with real database in production)
+# USER_DATABASE = {
+#     "admin": {
+#         "username": "admin",
+#         "password": "admin123",  # In production, store hashed passwords
+#         "role": "admin",
+#     },
+#     "user": {"username": "user", "password": "user123", "role": "user"},
+# }
+
+USER_DATABASE = {
+    "admin": {
+        "password": "admin123",  # In production, store hashed passwords
+        "role": "admin",
+    },
+    "msbio": {"password": "msbio123", "role": "admin"},
+}
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    print("JWT:", encoded_jwt)
+    return encoded_jwt
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+@app.post("/login_portal")
+async def login(login_request: LoginRequest):
+    user = USER_DATABASE.get(login_request.username)
+    print(login_request,user)
+    if not user or user["password"] != login_request.password:
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # access_token = create_access_token(
+    #     data={"sub": user["username"]}, expires_delta=access_token_expires
+    # )
+    access_token = create_access_token(
+        data={
+            "sub": login_request.username,
+            "role": user["role"],
+        },
+        expires_delta=access_token_expires,
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+):
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(
+                status_code=401, detail="Invalid authentication credentials"
+            )
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid token or expired token")
+
+    user = USER_DATABASE.get(username)
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return user
+
+
+# Example protected route
+@app.get("/protected")
+async def protected_route(current_user: dict = Depends(get_current_user)):
+    return {
+        "message": f"Hello {current_user['username']}",
+        "role": current_user["role"],
+    }
 
 
 from enum import Enum
