@@ -113,9 +113,9 @@
 
       <!-- Markdown Modal -->
       <transition enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 transform translate-y-4" enter-to-class="opacity-100 transform translate-y-0"
+        enter-from-class="opacity-0 transform -translate-y-4" enter-to-class="opacity-100 transform translate-y-0"
         leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 transform translate-y-0"
-        leave-to-class="opacity-0 transform translate-y-4">
+        leave-to-class="opacity-0 transform -translate-y-4">
         <div v-if="showMarkdownModal" @click.self="closeModal"
           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <transition enter-active-class="transition-all duration-300 ease-out"
@@ -469,7 +469,7 @@ onMounted(() => {
 
 const handleLogin = async () => {
   try {
-    const response = await fetch('http://localhost:8082/login_portal', {
+    const response = await fetch('http://192.168.10.96:8082/login_portal', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -562,8 +562,8 @@ const documents = ref([
     title: "T01.md",
     category: "markdown",
     date: "2025-6-12",
-    image: "/portal/logo.png",
-    file: "/portal/markdown/T01.md",
+    image: "/portal/markdown.png",
+    file: "/portal/markdown/T01_new.md",
   },
 ]);
 
