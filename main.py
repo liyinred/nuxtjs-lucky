@@ -74,7 +74,7 @@ class LoginRequest(BaseModel):
 @app.post("/login_portal")
 async def login(login_request: LoginRequest):
     user = USER_DATABASE.get(login_request.username)
-    print(login_request,user)
+    print(login_request, user)
     if not user or user["password"] != login_request.password:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
 
@@ -127,31 +127,13 @@ from enum import Enum
 from typing import Optional
 
 
-class MassUnit(str, Enum):
-    mg = "mg"
-    g = "g"
-    kg = "kg"
-
-
-class ConcentrationUnit(str, Enum):
-    μM = "μM"
-    mM = "mM"
-    M = "M"
-
-
-class VolumeUnit(str, Enum):
-    μL = "μL"
-    mL = "mL"
-    L = "L"
-
-
 class MolarityCalculatorRequest(BaseModel):
     massValue: Optional[float] = None
-    massUnit: Optional[MassUnit] = None
+    massUnit: Optional[str] = None
     concentrationValue: Optional[float] = None
-    concentrationUnit: Optional[ConcentrationUnit] = None
+    concentrationUnit: Optional[str] = None
     volumeValue: Optional[float] = None
-    volumeUnit: Optional[VolumeUnit] = None
+    volumeUnit: Optional[str] = None
     molecularWeight: float  # 单位默认为 g/mol
 
 
@@ -171,7 +153,13 @@ def convert_to_standard_units(value: float, unit: str, conversion_type: str) -> 
         else:  # g
             return value
     elif conversion_type == "concentration":
-        if unit == "μM":
+        if unit == "fM":
+            return value / 1_000_000_000_000
+        elif unit == "pM":
+            return value / 1_000_000_000
+        elif unit == "nM":
+            return value / 1_000_000
+        elif unit == "μM":
             return value / 1_000_000
         elif unit == "mM":
             return value / 1000
@@ -199,12 +187,19 @@ def get_optimal_unit(value: float, unit_type: str) -> tuple[float, str]:
         else:
             return value, "g"
     elif unit_type == "concentration":
-        if abs(value) >= 1:
+        abs_value = abs(value)
+        if abs_value >= 1:
             return value, "M"
-        elif abs(value) >= 0.001:
+        elif abs_value >= 0.001:
             return value * 1000, "mM"
-        else:
+        elif abs_value >= 1e-6:
             return value * 1_000_000, "μM"
+        elif abs_value >= 1e-9:
+            return value * 1_000_000_000, "nM"
+        elif abs_value >= 1e-12:
+            return value * 1_000_000_000_000, "pM"
+        else:
+            return value * 1_000_000_000_000_000, "fM"
     elif unit_type == "volume":
         if abs(value) >= 1:
             return value, "L"
@@ -356,29 +351,15 @@ async def mass_calculator(data: dict):
         raise HTTPException(status_code=500, detail=f"发生错误: {str(e)}")
 
 
-class ConcentrationUnit1(str, Enum):
-    M = "M"  # 摩尔/升
-    mM = "mM"  # 毫摩尔/升
-    μM = "μM"  # 微摩尔/升
-    nM = "nM"  # 纳摩尔/升
-    pM = "pM"  # 皮摩尔/升
-
-
-class VolumeUnit(str, Enum):
-    L = "L"  # 升
-    mL = "mL"  # 毫升
-    uL = "μL"  # 微升
-
-
 class DilutionRequest(BaseModel):
     c1Value: Optional[float] = None
-    c1Unit: ConcentrationUnit1
+    c1Unit: Optional[str] = None
     v1Value: Optional[float] = None
-    v1Unit: VolumeUnit
+    v1Unit: Optional[str] = None
     c2Value: Optional[float] = None
-    c2Unit: ConcentrationUnit1
+    c2Unit: Optional[str] = None
     v2Value: Optional[float] = None
-    v2Unit: VolumeUnit
+    v2Unit: Optional[str] = None
 
 
 class DilutionResponse(BaseModel):
@@ -389,17 +370,19 @@ class DilutionResponse(BaseModel):
 
 def convert_to_base(value: float, unit: str) -> float:
     """将所有单位转换为基本单位(M和L)"""
-    if unit in [ConcentrationUnit1.mM]:
+    if unit == "mM":
         return value * 1e-3
-    elif unit in [ConcentrationUnit1.μM]:
+    elif unit == "μM":
         return value * 1e-6
-    elif unit in [ConcentrationUnit1.nM]:
+    elif unit == "nM":
         return value * 1e-9
-    elif unit in [ConcentrationUnit1.pM]:
+    elif unit == "pM":
         return value * 1e-12
-    elif unit in [VolumeUnit.mL]:
+    elif unit == "fM":
+        return value * 1e-15
+    elif unit == "mL":
         return value * 1e-3
-    elif unit in [VolumeUnit.uL]:
+    elif unit == "μL":
         return value * 1e-6
     else:  # M or L
         return value
@@ -418,8 +401,10 @@ def find_optimal_unit(value: float, is_concentration: bool) -> tuple:
             return value / 1e-6, "μM"
         elif abs_value >= 1e-9:
             return value / 1e-9, "nM"
-        else:
+        elif abs_value >= 1e-12:
             return value / 1e-12, "pM"
+        else:
+            return value / 1e-15, "fM"
     else:  # volume
         if abs_value >= 1:
             return value, "L"
@@ -482,9 +467,9 @@ async def calculate_dilution(request: DilutionRequest):
         optimal_value, optimal_unit = find_optimal_unit(
             calculated_value, is_concentration=True
         )
-        calculated_value = optimal_value
+        calculated_value = float(f"{optimal_value:.4g}")
         calculated_unit = optimal_unit
-        message = f"初始浓度计算完成: {calculated_value} {calculated_unit}"
+        message = f"Initial concentration is: {calculated_value} {calculated_unit}"
 
     elif request.v1Value is None:
         # 计算初始体积 V1 = C2V2/C1
@@ -492,9 +477,9 @@ async def calculate_dilution(request: DilutionRequest):
         optimal_value, optimal_unit = find_optimal_unit(
             calculated_value, is_concentration=False
         )
-        calculated_value = optimal_value
+        calculated_value = float(f"{optimal_value:.4g}")
         calculated_unit = optimal_unit
-        message = f"初始体积计算完成: {calculated_value} {calculated_unit}"
+        message = f"Initial volume is: {calculated_value} {calculated_unit}"
 
     elif request.c2Value is None:
         # 计算稀释后浓度 C2 = C1V1/V2
@@ -502,9 +487,9 @@ async def calculate_dilution(request: DilutionRequest):
         optimal_value, optimal_unit = find_optimal_unit(
             calculated_value, is_concentration=True
         )
-        calculated_value = optimal_value
+        calculated_value = float(f"{optimal_value:.4g}")
         calculated_unit = optimal_unit
-        message = f"稀释后浓度计算完成: {calculated_value} {calculated_unit}"
+        message = f"Diluted concentration is: {calculated_value} {calculated_unit}"
 
     elif request.v2Value is None:
         # 计算稀释后体积 V2 = C1V1/C2
@@ -512,12 +497,12 @@ async def calculate_dilution(request: DilutionRequest):
         optimal_value, optimal_unit = find_optimal_unit(
             calculated_value, is_concentration=False
         )
-        calculated_value = optimal_value
+        calculated_value = float(f"{optimal_value:.4g}")
         calculated_unit = optimal_unit
-        message = f"稀释后体积计算完成: {calculated_value} {calculated_unit}"
+        message = f"Diluted volume is: {calculated_value} {calculated_unit}"
 
     return {
-        "calculatedValue": float(f"{calculated_value:.4g}"),
+        "calculatedValue": calculated_value,
         "calculatedUnit": calculated_unit,
         "message": message,
     }

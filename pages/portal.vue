@@ -124,7 +124,7 @@
             leave-to-class="opacity-0 transform scale-95">
             <div class="bg-white rounded-lg shadow-xl max-w-[90vw] md:max-w-[65vw] w-full max-h-[90vh] flex flex-col">
               <div class="p-4 border-b flex justify-between items-center">
-                <div class="text-2xl font-bold">{{ currentMarkdownTitle }}</div>
+                <div class="text-xl italic font-medium text-gray-600">{{ currentMarkdownTitle }}</div>
                 <button @click="showMarkdownModal = false" class="text-gray-500 hover:text-gray-700">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -132,7 +132,7 @@
                   </svg>
                 </button>
               </div>
-              <div class="p-6 overflow-y-auto flex-1 markdown-body" v-html="renderedMarkdown"></div>
+              <div class="p-4 overflow-y-auto flex-1 markdown-body" v-html="renderedMarkdown"></div>
             </div>
           </transition>
         </div>
@@ -145,9 +145,9 @@
         <div v-if="showChemistryModal" @click.self="closeModal"
           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div class="bg-white rounded-lg shadow-xl max-w-[90vw] md:max-w-[60vw] w-full max-h-[90vh] overflow-auto">
-            <div class="p-6">
+            <div class="p-4">
               <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">化学计算工具</h2>
+                <div class="text-xl italic font-medium text-gray-600">化学计算工具</div>
                 <button @click="showChemistryModal = false" class="text-gray-500 hover:text-gray-700">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -173,9 +173,9 @@
                             placeholder="Mass" />
                           <select v-model="massUnit"
                             class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="mg">mg</option>
-                            <option value="g">g</option>
                             <option value="kg">kg</option>
+                            <option value="g">g</option>
+                            <option value="mg">mg</option>
                           </select>
                         </div>
 
@@ -189,8 +189,12 @@
                             placeholder="Conc." />
                           <select v-model="concentrationUnit"
                             class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="mM">mM</option>
                             <option value="M">M</option>
+                            <option value="mM">mM</option>
+                            <option value="μM">μM</option>
+                            <option value="nM">nM</option>
+                            <option value="pM">pM</option>
+                            <option value="fM">fM</option>
                           </select>
                         </div>
 
@@ -204,9 +208,9 @@
                             placeholder="Volume" />
                           <select v-model="volumeUnit"
                             class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="μL">μL</option>
-                            <option value="mL">mL</option>
                             <option value="L">L</option>
+                            <option value="mL">mL</option>
+                            <option value="μL">μL</option>
                           </select>
                         </div>
 
@@ -281,9 +285,12 @@
                               placeholder="C1" />
                             <select v-model="c1Unit"
                               class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                              <option value="μM">μM</option>
-                              <option value="mM">mM</option>
                               <option value="M">M</option>
+                              <option value="mM">mM</option>
+                              <option value="μM">μM</option>
+                              <option value="nM">nM</option>
+                              <option value="pM">pM</option>
+                              <option value="fM">fM</option>
                             </select>
                           </div>
 
@@ -295,9 +302,9 @@
                               placeholder="V1" />
                             <select v-model="v1Unit"
                               class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                              <option value="μL">μL</option>
-                              <option value="mL">mL</option>
                               <option value="L">L</option>
+                              <option value="mL">mL</option>
+                              <option value="μL">μL</option>
                             </select>
                           </div>
                         </div>
@@ -315,9 +322,12 @@
                               placeholder="C2" />
                             <select v-model="c2Unit"
                               class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                              <option value="μM">μM</option>
-                              <option value="mM">mM</option>
                               <option value="M">M</option>
+                              <option value="mM">mM</option>
+                              <option value="μM">μM</option>
+                              <option value="nM">nM</option>
+                              <option value="pM">pM</option>
+                              <option value="fM">fM</option>
                             </select>
                           </div>
 
@@ -329,9 +339,9 @@
                               placeholder="V2" />
                             <select v-model="v2Unit"
                               class="ml-2 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                              <option value="μL">μL</option>
-                              <option value="mL">mL</option>
                               <option value="L">L</option>
+                              <option value="mL">mL</option>
+                              <option value="μL">μL</option>
                             </select>
                           </div>
                         </div>
@@ -469,7 +479,7 @@ onMounted(() => {
 
 const handleLogin = async () => {
   try {
-    const response = await fetch('http://192.168.10.96:8082/login_portal', {
+    const response = await fetch('http://localhost:8082/login_portal', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -644,11 +654,22 @@ const handleCardClick = async (document, event) => {
   }
 };
 
+// const md = new MarkdownIt({
+//   html: true,
+//   linkify: true,
+//   typographer: true,
+//   breaks: true
+// }).use(mk);
+
 const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true
-}).use(mk);
+  html: true,       // 允许 HTML 标签（默认 false）
+  linkify: true,     // 自动识别文本中的链接并转换为 <a> 标签
+  typographer: true, // 启用排版优化（如智能引号、破折号等）
+  breaks: true,      // 将换行符 `\n` 转换为 `<br>`（默认 false）
+  xhtmlOut: true,    // 使用 XHTML 风格的闭合标签（如 `<br />`）
+  langPrefix: 'language-', // 代码块的语言类名前缀（用于语法高亮）
+  quotes: '“”‘’',    // 设置智能引号的样式（typographer 启用时有效）
+});
 
 const loadAndRenderMarkdown = async (filePath) => {
   try {
@@ -749,7 +770,7 @@ const calculate = async () => {
         molecularWeight.value === "" ? null : molecularWeight.value,
     };
 
-    const response = await fetch("http://192.168.10.96:8082/molarity_calculator", {
+    const response = await fetch("http://localhost:8082/molarity_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -774,10 +795,9 @@ const calculate = async () => {
     // Show success message
     await Swal.fire({
       icon: "success",
-      title: "Success",
-      text: "The calculation was performed successfully!",
-      timer: 2000,
-      showConfirmButton: false,
+      title: "Calculation Complete",
+      text: `${data.message}: ${data.calculatedValue} ${data.calculatedUnit}`,
+      showConfirmButton: true,
     });
   } catch (error) {
     console.error("Error:", error);
@@ -858,7 +878,7 @@ const dilution_calculate = async () => {
       v2Unit: v2Unit.value,
     };
 
-    const response = await fetch("http://192.168.10.96:8082/dilution_calculator", {
+    const response = await fetch("http://localhost:8082/dilution_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -890,9 +910,8 @@ const dilution_calculate = async () => {
     Swal.fire({
       icon: "success",
       title: "Calculation Complete",
-      text: "The calculation was performed successfully!",
-      timer: 2000,
-      showConfirmButton: false,
+      text: `${result.message}`,
+      showConfirmButton: true,
     });
   } catch (error) {
     console.error("Error:", error);
@@ -928,7 +947,7 @@ const massCalculator = async () => {
   }
 
   try {
-    const response = await fetch("http://192.168.10.96:8082/mass_calculator", {
+    const response = await fetch("http://localhost:8082/mass_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -944,7 +963,7 @@ const massCalculator = async () => {
     Swal.fire({
       icon: "success",
       title: "Calculation Complete",
-      text: `${molecularFormula.value} 的分子量为: ${data.molecularWeight} ${data.unit}`,
+      text: `The molecular weight of ${molecularFormula.value} is: ${data.molecularWeight} ${data.unit}`,
     });
   } catch (error) {
     Swal.fire({
@@ -960,6 +979,15 @@ const massCalculator = async () => {
 </script>
 
 <style>
+html::-webkit-scrollbar {
+  display: none;
+}
+
+input,
+select {
+  font-size: 14px;
+}
+
 .markdown-body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   line-height: 1.6;
@@ -967,7 +995,8 @@ const massCalculator = async () => {
 
 .markdown-body h1,
 .markdown-body h2,
-.markdown-body h3 {
+.markdown-body h3,
+.markdown-body h4 {
   margin-bottom: 10px;
   font-weight: 600;
 }

@@ -71,5 +71,3 @@ JellyRed兼容多种缓冲液，可选择以下稀释液进行使用：
 JellyRed核酸染色结果可通过UV透射仪进行可视化观察，可搭配使用EtBr/SYBR滤光片。
 
 ![alt text](/portal/20250610085922.png)
-
-
