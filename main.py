@@ -51,6 +51,7 @@ USER_DATABASE = {
         "role": "admin",
     },
     "msbio": {"password": "msbio123", "role": "admin"},
+    "user": {"password": "user123", "role": "user"},
 }
 
 

@@ -7,7 +7,9 @@
           <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <img src="/portal/logo.png" class="h-16 sm:h-20 w-auto" />
             <div>
-              <h1 class="text-xl sm:text-3xl font-bold text-gray-900">MSBIO Lab Portal</h1>
+              <h1 class="text-xl sm:text-3xl font-bold text-gray-900">
+                MSBIO Lab Portal
+              </h1>
               <p class="mt-1 text-xs sm:text-sm text-gray-500">
                 Laboratory L02 - Documents and Tools
               </p>
@@ -17,7 +19,10 @@
             <span v-if="isAuthenticated"
               class="inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
               <span class="text-gray-700 dark:text-gray-300 text-base sm:text-lg font-medium tracking-wide">
-                👋 Welcome, <span class="text-indigo-600 dark:text-indigo-400">{{ username }}</span>
+                👋 Welcome,
+                <span class="text-indigo-600 dark:text-indigo-400">{{
+                  username
+                }}</span>
               </span>
 
               <button @click="logout"
@@ -124,7 +129,9 @@
             leave-to-class="opacity-0 transform scale-95">
             <div class="bg-white rounded-lg shadow-xl max-w-[90vw] md:max-w-[65vw] w-full max-h-[90vh] flex flex-col">
               <div class="p-4 border-b flex justify-between items-center">
-                <div class="text-xl italic font-medium text-gray-600">{{ currentMarkdownTitle }}</div>
+                <div class="text-xl italic font-medium text-gray-600">
+                  {{ currentMarkdownTitle }}
+                </div>
                 <button @click="showMarkdownModal = false" class="text-gray-500 hover:text-gray-700">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -147,7 +154,9 @@
           <div class="bg-white rounded-lg shadow-xl max-w-[90vw] md:max-w-[60vw] w-full max-h-[90vh] overflow-auto">
             <div class="p-4">
               <div class="flex justify-between items-center mb-6">
-                <div class="text-xl italic font-medium text-gray-600">化学计算工具</div>
+                <div class="text-xl italic font-medium text-gray-600">
+                  BioMolecular
+                </div>
                 <button @click="showChemistryModal = false" class="text-gray-500 hover:text-gray-700">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -227,14 +236,14 @@
                       </div>
 
                       <!-- 按钮区域 -->
-                      <div class="flex flex-wrap justify-end gap-2 mt-6">
+                      <div class="flex flex-wrap justify-end gap-4 mt-6">
                         <button @click="reset1"
                           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                          重置
+                          Reset
                         </button>
                         <button @click="calculate"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                          计算
+                          Calculate
                         </button>
                       </div>
                     </div>
@@ -248,19 +257,20 @@
                   </h3>
                   <div class="space-y-4">
                     <div class="bg-white p-4 md:p-10 rounded-lg shadow-sm max-w-full overflow-hidden">
-                      <!-- 第一行：输入框和计算按钮 -->
+                      <!-- 第一行：输入框和Calculate按钮 -->
                       <div class="flex flex-wrap gap-2 mb-4 w-full">
-                        <input v-model="molecularFormula" type="text" placeholder="请输入分子式(如H2O)"
+                        <input v-model="molecularFormula" type="text"
+                          placeholder="Please enter the molecular formula (e.g., H2O)"
                           class="min-w-[150px] flex-grow px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         <button @click="massCalculator"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 whitespace-nowrap">
-                          计算
+                          Calculate
                         </button>
                       </div>
 
                       <!-- 第二行：总分子量显示 -->
                       <div class="flex flex-wrap gap-2 items-center w-full">
-                        <label class="text-gray-700 whitespace-nowrap">总分子量:</label>
+                        <label class="text-gray-700 whitespace-nowrap">Total molecular weight:</label>
                         <input :value="totalMass" readonly
                           class="px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[100px] min-w-[100px]" />
                         <span class="text-gray-700 whitespace-nowrap">g/mol</span>
@@ -348,14 +358,14 @@
                       </div>
 
                       <!-- 按钮区域 -->
-                      <div class="flex justify-end space-x-2 mt-6">
+                      <div class="flex justify-end gap-4 mt-6">
                         <button @click="reset2"
                           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                          重置
+                          Reset
                         </button>
                         <button @click="dilution_calculate"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                          计算
+                          Calculate
                         </button>
                       </div>
                     </div>
@@ -412,42 +422,41 @@
 <script setup>
 import { ref, computed } from "vue";
 import Swal from "sweetalert2";
-import MarkdownIt from 'markdown-it';
-import mk from '@traptitech/markdown-it-katex';
-import 'katex/dist/katex.min.css';
-
+import MarkdownIt from "markdown-it";
+import mk from "@traptitech/markdown-it-katex";
+import "katex/dist/katex.min.css";
 
 useHead({
   title: "MSBIO Portal",
 });
 
 const loginForm = ref({
-  username: '',
-  password: ''
+  username: "",
+  password: "",
 });
 
 const isAuthenticated = ref(false);
-const username = ref('');
-const role = ref('');
+const username = ref("");
+const role = ref("");
 
 // 从 JWT token 解码 payload
 const decodeJwtPayload = (token) => {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const payload = JSON.parse(atob(base64));
-    console.log(payload, Date.now())
+    console.log(payload, Date.now());
     return payload;
   } catch (error) {
-    console.error('Failed to decode JWT:', error);
+    console.error("Failed to decode JWT:", error);
     return null;
   }
 };
 
 // 检查认证状态
 const checkAuth = () => {
-  const token = localStorage.getItem('jwt_token');
-  console.log('JWT: ', token);
+  const token = localStorage.getItem("jwt_token");
+  console.log("JWT: ", token);
 
   if (token) {
     const payload = decodeJwtPayload(token);
@@ -455,18 +464,18 @@ const checkAuth = () => {
     if (payload && payload.exp * 1000 > Date.now()) {
       isAuthenticated.value = true;
       // 从 payload 中提取 sub 和 role
-      username.value = payload.sub || '';
-      role.value = payload.role || '';
+      username.value = payload.sub || "";
+      role.value = payload.role || "";
     } else {
-      localStorage.removeItem('jwt_token');
-      username.value = '';
-      role.value = '';
+      localStorage.removeItem("jwt_token");
+      username.value = "";
+      role.value = "";
 
       Swal.fire({
-        icon: 'warning',
-        title: 'Session Expired',
-        text: 'Your session has timed out. Please login again.',
-        confirmButtonText: 'OK'
+        icon: "warning",
+        title: "Session Expired",
+        text: "Your session has timed out. Please login again.",
+        confirmButtonText: "OK",
       });
     }
   }
@@ -475,109 +484,78 @@ const checkAuth = () => {
 // 页面加载时检查认证状态
 onMounted(() => {
   checkAuth();
+  fetchDocuments();
 });
 
 const handleLogin = async () => {
   try {
-    const response = await fetch('http://localhost:8082/login_portal', {
-      method: 'POST',
+    const response = await fetch("http://localhost:8082/login_portal", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(loginForm.value)
+      body: JSON.stringify(loginForm.value),
     });
 
     if (!response.ok) {
-      throw new Error('Login failed');
+      throw new Error("Login failed");
     }
 
     const data = await response.json();
-    localStorage.setItem('jwt_token', data.access_token);
+    localStorage.setItem("jwt_token", data.access_token);
 
     // 解码 token 并设置用户信息
     const payload = decodeJwtPayload(data.access_token);
     if (payload) {
-      username.value = payload.sub || '';
-      role.value = payload.role || '';
+      username.value = payload.sub || "";
+      role.value = payload.role || "";
     }
 
     isAuthenticated.value = true;
 
     Swal.fire({
-      icon: 'success',
-      title: 'Login Successful',
+      icon: "success",
+      title: "Login Successful",
       showConfirmButton: false,
-      timer: 1500
+      timer: 1500,
     });
   } catch (error) {
     Swal.fire({
-      icon: 'error',
-      title: 'Login Failed',
-      text: 'Invalid username or password',
+      icon: "error",
+      title: "Login Failed",
+      text: "Invalid username or password",
     });
   }
 };
 
 const logout = () => {
-  localStorage.removeItem('jwt_token');
+  localStorage.removeItem("jwt_token");
   isAuthenticated.value = false;
-  loginForm.value = { username: '', password: '' };
+  loginForm.value = { username: "", password: "" };
 
   Swal.fire({
-    title: 'Logged Out',
-    text: 'You have been successfully logged out.',
-    icon: 'success',
-    confirmButtonText: 'OK'
+    title: "Logged Out",
+    text: "You have been successfully logged out.",
+    icon: "success",
+    confirmButtonText: "OK",
   });
 };
 
-const documents = ref([
-  {
-    id: 1,
-    title: "Biotech Cleaning Schedule",
-    category: "Cleaning",
-    date: "2025-06-03",// 改为YYYY-MM-DD格式
-    image: "/portal/L02_Biotech_Cleaning_Schedule-1.png",
-  },
-  {
-    id: 2,
-    title: "Cleaning Checklist",
-    category: "Cleaning",
-    date: "2025-06-03",
-    image: "/portal/L02_Cleaning_Checklist-1.png",
-  },
-  {
-    id: 3,
-    title: "Safety Checklist",
-    category: "Safety",
-    date: "2025-06-03",
-    image: "/portal/L02_Safety_Checklist-1.png",
-  },
-  {
-    id: 4,
-    title: "Sanitation Duty Schedule",
-    category: "Schedule",
-    date: "2025-06-03",
-    image: "/portal/L02_Sanitation Duty Schedule (May-June)-1.png",
-  },
-  {
-    id: 5,
-    title: "化学计算工具",
-    category: "Tool",
-    date: "2025-06-06",
-    image: "/portal/logo.png",
-  },
-  {
-    id: 6,
-    title: "T01.md",
-    category: "markdown",
-    date: "2025-6-12",
-    image: "/portal/markdown.png",
-    file: "/portal/markdown/T01_new.md",
-  },
-]);
+const documents = ref([]);
 
-// 计算上海时间与给定日期的天数差
+const fetchDocuments = async () => {
+  try {
+    const response = await fetch("/portal/json/documents.json");
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    documents.value = await response.json();
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+  }
+};
+
+// Calculate上海时间与给定日期的天数差
 const formatUpdatedDate = (dateString) => {
   if (!dateString || isNaN(new Date(dateString))) {
     return "Invalid date";
@@ -585,16 +563,16 @@ const formatUpdatedDate = (dateString) => {
 
   try {
     // 获取上海时区的当前日期(00:00:00)
-    const options = { timeZone: 'Asia/Shanghai' };
-    const todayStr = new Date().toLocaleDateString('en-US', options);
+    const options = { timeZone: "Asia/Shanghai" };
+    const todayStr = new Date().toLocaleDateString("en-US", options);
     const today = new Date(todayStr);
 
     // 解析输入日期并转换为上海时区日期
     const inputDate = new Date(dateString);
-    const inputDateStr = inputDate.toLocaleDateString('en-US', options);
+    const inputDateStr = inputDate.toLocaleDateString("en-US", options);
     const shanghaiInputDate = new Date(inputDateStr);
 
-    // 计算天数差
+    // Calculate天数差
     const timeDiff = today - shanghaiInputDate;
     const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
@@ -619,8 +597,8 @@ const searchQuery = ref("");
 const showChemistryModal = ref(false);
 
 const showMarkdownModal = ref(false);
-const renderedMarkdown = ref('');
-const currentMarkdownTitle = ref('');
+const renderedMarkdown = ref("");
+const currentMarkdownTitle = ref("");
 
 const mass = ref(null);
 const massUnit = ref("g");
@@ -648,7 +626,7 @@ const handleCardClick = async (document, event) => {
     currentMarkdownTitle.value = document.title;
     await loadAndRenderMarkdown(document.file);
     showMarkdownModal.value = true;
-  } else if (document.title === "化学计算工具") {
+  } else if (document.title === "BioMolecular") {
     event.preventDefault();
     showChemistryModal.value = true;
   }
@@ -662,24 +640,24 @@ const handleCardClick = async (document, event) => {
 // }).use(mk);
 
 const md = new MarkdownIt({
-  html: true,       // 允许 HTML 标签（默认 false）
-  linkify: true,     // 自动识别文本中的链接并转换为 <a> 标签
+  html: true, // 允许 HTML 标签（默认 false）
+  linkify: true, // 自动识别文本中的链接并转换为 <a> 标签
   typographer: true, // 启用排版优化（如智能引号、破折号等）
-  breaks: true,      // 将换行符 `\n` 转换为 `<br>`（默认 false）
-  xhtmlOut: true,    // 使用 XHTML 风格的闭合标签（如 `<br />`）
-  langPrefix: 'language-', // 代码块的语言类名前缀（用于语法高亮）
-  quotes: '“”‘’',    // 设置智能引号的样式（typographer 启用时有效）
-});
+  breaks: true, // 将换行符 `\n` 转换为 `<br>`（默认 false）
+  xhtmlOut: true, // 使用 XHTML 风格的闭合标签（如 `<br />`）
+  langPrefix: "language-", // 代码块的语言类名前缀（用于语法高亮）
+  quotes: "“”‘’", // 设置智能引号的样式（typographer 启用时有效）
+}).use(mk);
 
 const loadAndRenderMarkdown = async (filePath) => {
   try {
     const response = await fetch(filePath);
-    if (!response.ok) throw new Error('Markdown文件加载失败');
+    if (!response.ok) throw new Error("Markdown文件加载失败");
 
     const markdownText = await response.text();
     renderedMarkdown.value = md.render(markdownText);
   } catch (error) {
-    console.error('加载Markdown失败:', error);
+    console.error("加载Markdown失败:", error);
     renderedMarkdown.value = `<p>无法加载Markdown内容: ${error.message}</p>`;
   }
 };
@@ -714,8 +692,7 @@ function toggleCategory(category) {
 
 const filteredDocuments = computed(() => {
   return documents.value.filter((doc) => {
-
-    if (role.value === 'user' && doc.category === 'Tool') {
+    if (role.value === "user" && doc.category === "Tool") {
       return false;
     }
     const categoryMatch =
@@ -862,7 +839,7 @@ const convertEmptyToNull = (value) => {
   return value === "" ? null : Number(value);
 };
 
-// 计算函数
+// Calculate函数
 const dilution_calculate = async () => {
   if (!checkEmptyFields()) return;
 
@@ -975,7 +952,6 @@ const massCalculator = async () => {
     console.error("Error:", error);
   }
 };
-
 </script>
 
 <style>
@@ -989,7 +965,8 @@ select {
 }
 
 .markdown-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif;
   line-height: 1.6;
 }
 
@@ -1033,7 +1010,8 @@ select {
   background-color: rgba(175, 184, 193, 0.2);
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
 }
 
 /* 表格样式 */

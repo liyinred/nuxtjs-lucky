@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "title": "Biotech Cleaning Schedule",
+    "category": "Cleaning",
+    "date": "2025-06-03",
+    "image": "/portal/L02_Biotech_Cleaning_Schedule-1.png"
+  },
+  {
+    "id": 2,
+    "title": "Cleaning Checklist",
+    "category": "Cleaning",
+    "date": "2025-06-03",
+    "image": "/portal/L02_Cleaning_Checklist-1.png"
+  },
+  {
+    "id": 3,
+    "title": "Safety Checklist",
+    "category": "Safety",
+    "date": "2025-06-03",
+    "image": "/portal/L02_Safety_Checklist-1.png"
+  },
+  {
+    "id": 4,
+    "title": "Sanitation Duty Schedule",
+    "category": "Schedule",
+    "date": "2025-06-03",
+    "image": "/portal/L02_Sanitation Duty Schedule (May-June)-1.png"
+  },
+  {
+    "id": 5,
+    "title": "BioMolecular",
+    "category": "Tool",
+    "date": "2025-06-06",
+    "image": "/portal/logo.png"
+  },
+  {
+    "id": 6,
+    "title": "T01.md",
+    "category": "markdown",
+    "date": "2025-06-12",
+    "image": "/portal/markdown.png",
+    "file": "/portal/markdown/T01_new.md"
+  }
+]
