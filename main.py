@@ -1,10 +1,14 @@
+import os
+from pathlib import Path
 from fastapi import (
+    Depends,
     FastAPI,
     HTTPException,
     HTTPException,
-    Depends,
+    Header,
 )
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -28,12 +32,48 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# app.mount("/api/public", StaticFiles(directory="public"), name="public")
+
+
+def get_current_user(authorization: Optional[str] = Header(None)):
+
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    # 通常 Authorization 头的格式是 "Bearer <token>"
+    try:
+        scheme, token = authorization.split()
+        if scheme.lower() != "bearer":
+            raise HTTPException(status_code=401, detail="Invalid authentication scheme")
+    except Exception as e:
+        raise HTTPException(
+            status_code=401, detail="Invalid authorization header format"
+        )
+
+    try:
+        payload = decode_access_token(token)
+        return payload
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+
+@app.get("/api_public/{file_path:path}")
+async def serve_public_file(
+    file_path: str, user: Optional[dict] = Depends(get_current_user)
+):
+    # 构建完整的文件路径
+    full_path = os.path.join("public", file_path)
+
+    # 检查文件是否存在且是文件（不是目录）
+    if not os.path.exists(full_path) or not os.path.isfile(full_path):
+        raise HTTPException(status_code=404, detail="File not found")
+
+    return FileResponse(full_path)
+
+
 # JWT Configuration
 SECRET_KEY = "your-secret-key-here"  # Change this to a strong secret in production
-ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 1
-
-security = HTTPBearer()
 
 # Mock user database (replace with real database in production)
 # USER_DATABASE = {
@@ -62,9 +102,30 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
     print("JWT:", encoded_jwt)
+    print(decode_access_token(encoded_jwt))
     return encoded_jwt
+
+
+def decode_access_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=["HS256"],
+            options={
+                "verify_exp": True,  # 验证过期时间
+                "verify_signature": True,  # 验证签名 with SECRET_KEY
+            },
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise Exception("Token has expired")
+    except jwt.InvalidTokenError as e:
+        raise Exception(f"Invalid token: {str(e)}")
+    except Exception as e:
+        raise Exception(f"Error decoding token: {str(e)}")
 
 
 class LoginRequest(BaseModel):
@@ -72,56 +133,52 @@ class LoginRequest(BaseModel):
     password: str
 
 
+# @app.post("/login_portal")
+# async def login(login_request: LoginRequest):
+#     user = USER_DATABASE.get(login_request.username)
+#     print(login_request, user)
+#     if not user or user["password"] != login_request.password:
+#         raise HTTPException(status_code=401, detail="Incorrect username or password")
+
+#     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+#     access_token = create_access_token(
+#         data={
+#             "sub": login_request.username,
+#             "role": user["role"],
+#         },
+#         expires_delta=access_token_expires,
+#     )
+
+#     return {"access_token": access_token, "token_type": "bearer"}
+
+
 @app.post("/login_portal")
 async def login(login_request: LoginRequest):
-    user = USER_DATABASE.get(login_request.username)
-    print(login_request, user)
-    if not user or user["password"] != login_request.password:
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
-
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # access_token = create_access_token(
-    #     data={"sub": user["username"]}, expires_delta=access_token_expires
-    # )
-    access_token = create_access_token(
-        data={
-            "sub": login_request.username,
-            "role": user["role"],
-        },
-        expires_delta=access_token_expires,
-    )
-
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-):
-    token = credentials.credentials
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        user = USER_DATABASE.get(login_request.username)
+        print(login_request, user)
+        if not user or user["password"] != login_request.password:
             raise HTTPException(
-                status_code=401, detail="Invalid authentication credentials"
+                status_code=401, detail="Incorrect username or password"
             )
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=401, detail="Invalid token or expired token")
 
-    user = USER_DATABASE.get(username)
-    if user is None:
-        raise HTTPException(status_code=401, detail="User not found")
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={
+                "sub": login_request.username,
+                "role": user["role"],
+            },
+            expires_delta=access_token_expires,
+        )
 
-    return user
+        return {"access_token": access_token, "token_type": "bearer"}
 
-
-# Example protected route
-@app.get("/protected")
-async def protected_route(current_user: dict = Depends(get_current_user)):
-    return {
-        "message": f"Hello {current_user['username']}",
-        "role": current_user["role"],
-    }
+    except Exception as e:
+        print(f"Unexpected error during login: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"{str(e)}",
+        )
 
 
 from enum import Enum

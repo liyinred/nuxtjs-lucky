@@ -466,6 +466,8 @@ const checkAuth = () => {
       // 从 payload 中提取 sub 和 role
       username.value = payload.sub || "";
       role.value = payload.role || "";
+
+      fetchDocuments();
     } else {
       localStorage.removeItem("jwt_token");
       username.value = "";
@@ -484,7 +486,6 @@ const checkAuth = () => {
 // 页面加载时检查认证状态
 onMounted(() => {
   checkAuth();
-  fetchDocuments();
 });
 
 const handleLogin = async () => {
@@ -510,8 +511,9 @@ const handleLogin = async () => {
       username.value = payload.sub || "";
       role.value = payload.role || "";
     }
-
     isAuthenticated.value = true;
+
+    await fetchDocuments();
 
     Swal.fire({
       icon: "success",
@@ -519,6 +521,7 @@ const handleLogin = async () => {
       showConfirmButton: false,
       timer: 1500,
     });
+
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -543,15 +546,54 @@ const logout = () => {
 
 const documents = ref([]);
 
+// const fetchDocuments = async () => {
+//   try {
+//     const response = await fetch("http://localhost:8082/api/public/portal/json/documents.json");
+//     if (!response.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+//     documents.value = await response.json();
+//   } catch (error) {
+//     console.error("Error fetching documents:", error);
+//   }
+// };
+
 const fetchDocuments = async () => {
   try {
-    const response = await fetch("/portal/json/documents.json");
+    const token = localStorage.getItem("jwt_token");
+    if (!token) {
+      isAuthenticated.value = false;
+      username.value = "";
+      role.value = "";
+      throw new Error("No JWT token found");
+    }
+
+    const response = await fetch(`http://localhost:8082/api_public/portal/json/documents.json?v=${new Date().getTime()}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
     if (!response.ok) {
+      localStorage.removeItem("jwt_token");
+      isAuthenticated.value = false;
+      username.value = "";
+      role.value = "";
       throw new Error("Network response was not ok");
     }
     documents.value = await response.json();
+
   } catch (error) {
+
     console.error("Error fetching documents:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Authentication failed, please log in again",
+      text: error.message,
+    });
+
   }
 };
 
