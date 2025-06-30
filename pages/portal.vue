@@ -11,7 +11,7 @@
                 MSBIO Lab Portal
               </h1>
               <p class="mt-1 text-xs sm:text-sm text-gray-500">
-                Laboratory L02 - Documents and Tools
+                MSBIO Laboratory - Documents and Tools
               </p>
             </div>
           </div>
@@ -490,7 +490,7 @@ onMounted(() => {
 
 const handleLogin = async () => {
   try {
-    const response = await fetch("http://localhost:8082/login_portal", {
+    const response = await fetch("http://192.168.10.96:8082/login_portal", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -548,7 +548,7 @@ const documents = ref([]);
 
 // const fetchDocuments = async () => {
 //   try {
-//     const response = await fetch("http://localhost:8082/api/public/portal/json/documents.json");
+//     const response = await fetch("http://192.168.10.96:8082/api/public/portal/json/documents.json");
 //     if (!response.ok) {
 //       throw new Error("Network response was not ok");
 //     }
@@ -568,7 +568,7 @@ const fetchDocuments = async () => {
       throw new Error("No JWT token found");
     }
 
-    const response = await fetch(`http://localhost:8082/api_public/portal/json/documents.json?v=${new Date().getTime()}`, {
+    const response = await fetch(`http://192.168.10.96:8082/api_public/portal/json/documents.json?v=${new Date().getTime()}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -633,7 +633,7 @@ const formatUpdatedDate = (dateString) => {
   }
 };
 
-const categories = ref(["All", "Cleaning", "Safety", "Schedule", "Tool"]);
+const categories = ref(["All", "Checklist", "Schedule", "Tool"]);
 const selectedCategories = ref(["All"]);
 const searchQuery = ref("");
 const showChemistryModal = ref(false);
@@ -789,7 +789,7 @@ const calculate = async () => {
         molecularWeight.value === "" ? null : molecularWeight.value,
     };
 
-    const response = await fetch("http://localhost:8082/molarity_calculator", {
+    const response = await fetch("http://192.168.10.96:8082/molarity_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -897,7 +897,7 @@ const dilution_calculate = async () => {
       v2Unit: v2Unit.value,
     };
 
-    const response = await fetch("http://localhost:8082/dilution_calculator", {
+    const response = await fetch("http://192.168.10.96:8082/dilution_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -966,7 +966,7 @@ const massCalculator = async () => {
   }
 
   try {
-    const response = await fetch("http://localhost:8082/mass_calculator", {
+    const response = await fetch("http://192.168.10.96:8082/mass_calculator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -997,7 +997,6 @@ const massCalculator = async () => {
 </script>
 
 <style>
-
 html::-webkit-scrollbar {
   display: none;
 }

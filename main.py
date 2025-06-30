@@ -56,7 +56,8 @@ def get_current_user(authorization: Optional[str] = Header(None)):
 
 @app.get("/api_public/{file_path:path}")
 async def serve_public_file(
-    file_path: str, user: Optional[dict] = Depends(get_current_user)
+    file_path: str, 
+    # user: Optional[dict] = Depends(get_current_user)
 ):
     # 构建完整的文件路径
     full_path = os.path.join("public", file_path)
