@@ -997,8 +997,14 @@ const massCalculator = async () => {
 </script>
 
 <style>
+
 html::-webkit-scrollbar {
   display: none;
+}
+
+body.swal2-shown:not(.swal2-no-backdrop) {
+  overflow: auto !important;
+  padding-right: 0 !important;
 }
 
 input,

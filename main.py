@@ -1,5 +1,3 @@
-import os
-from pathlib import Path
 from fastapi import (
     Depends,
     FastAPI,
@@ -8,11 +6,10 @@ from fastapi import (
     Header,
 )
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-import jwt, re, uvicorn
+import jwt, re, uvicorn, os
 
 app = FastAPI()
 
@@ -75,7 +72,6 @@ async def serve_public_file(
 SECRET_KEY = "your-secret-key-here"  # Change this to a strong secret in production
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 1
 
-# Mock user database (replace with real database in production)
 # USER_DATABASE = {
 #     "admin": {
 #         "username": "admin",
@@ -108,6 +104,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
+# 任何对Header或Payload的修改都会导致签名验证失败
 def decode_access_token(token: str):
     try:
         payload = jwt.decode(
@@ -181,6 +178,7 @@ async def login(login_request: LoginRequest):
         )
 
 
+# BioMolecular Function
 from enum import Enum
 from typing import Optional
 
